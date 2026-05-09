@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CoreVerse — Phase 2 Game Base</title>
+  <title>CoreVerse — Phase 2 Expanded</title>
   <style>
     :root {
       --bg: #07111f;
@@ -17,19 +17,27 @@
       --danger: #ff5c7a;
       --line: rgba(255,255,255,0.08);
       --shadow: 0 14px 40px rgba(0,0,0,0.35);
+      --good: #4ee39f;
+      --info: #6fb2ff;
     }
     * { box-sizing: border-box; }
-    html, body { margin: 0; min-height: 100%; background: radial-gradient(circle at top, #16274e 0%, var(--bg) 60%); color: var(--text); font-family: Arial, Helvetica, sans-serif; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: radial-gradient(circle at top, #16274e 0%, var(--bg) 60%);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
     button, input, select { font: inherit; }
     header {
-      position: sticky; top: 0; z-index: 5;
+      position: sticky; top: 0; z-index: 10;
       backdrop-filter: blur(12px);
       background: rgba(6, 12, 24, 0.68);
       border-bottom: 1px solid var(--line);
-      padding: 16px 18px;
+      padding: 14px 18px;
     }
     h1 { margin: 0 0 6px; font-size: 24px; }
-    .sub { color: var(--muted); font-size: 13px; }
+    .sub { color: var(--muted); font-size: 13px; line-height: 1.45; }
     .wrap {
       display: grid;
       grid-template-columns: 320px 1fr 320px;
@@ -44,20 +52,20 @@
       box-shadow: var(--shadow);
       overflow: hidden;
     }
-    .panel h2 {
-      font-size: 14px;
-      margin: 0 0 10px;
-      letter-spacing: 0.3px;
-      color: #dbe5ff;
-    }
     .sidebar, .rightbar { padding: 14px; }
     .section { margin-bottom: 16px; }
+    .section:last-child { margin-bottom: 0; }
     .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
     .grid4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; }
     button {
-      border: 0; border-radius: 12px; padding: 10px 12px;
-      color: var(--text); background: var(--panel2); cursor: pointer; font-weight: 700;
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 12px;
+      color: var(--text);
+      background: var(--panel2);
+      cursor: pointer;
+      font-weight: 700;
       transition: transform .08s ease, filter .08s ease, outline .08s ease;
     }
     button:hover { filter: brightness(1.08); }
@@ -69,51 +77,143 @@
     button.danger { background: linear-gradient(135deg, var(--danger), #ff8b9d); color: #27050b; }
     .small { font-size: 12px; color: var(--muted); line-height: 1.5; }
     .stat {
-      padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px;
-      background: rgba(255,255,255,0.04); margin-bottom: 8px; font-size: 13px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.04);
+      margin-bottom: 8px;
+      font-size: 13px;
     }
     .stat b { color: #fff; }
     .bar {
-      height: 10px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; margin-top: 6px;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+      margin-top: 6px;
     }
     .bar > div { height: 100%; width: 50%; border-radius: inherit; }
     .bar.hp > div { background: linear-gradient(90deg, #ff5c7a, #ff9aa9); }
     .bar.hunger > div { background: linear-gradient(90deg, #ffcc66, #ffe1a0); }
     .bar.stamina > div { background: linear-gradient(90deg, #28d7a1, #65f2c9); }
     .bar.energy > div { background: linear-gradient(90deg, #7c5cff, #b38bff); }
+    .bar.xp > div { background: linear-gradient(90deg, #6fb2ff, #b7dcff); }
     .gameWrap { padding: 12px; }
     canvas {
-      width: 100%; height: 760px; display: block; border-radius: 18px;
+      width: 100%;
+      height: 760px;
+      display: block;
+      border-radius: 18px;
       background: linear-gradient(180deg, #0e1731, #070b13 60%, #06080f);
       border: 1px solid var(--line);
       image-rendering: pixelated;
     }
     .tinyRow { display: flex; gap: 8px; flex-wrap: wrap; }
     .chip {
-      display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px;
-      background: rgba(255,255,255,0.06); border: 1px solid var(--line); border-radius: 999px; font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      margin: 2px 4px 2px 0;
     }
     .inventory {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
     }
     .itemCard {
-      border: 1px solid var(--line); background: rgba(255,255,255,0.04); border-radius: 14px; padding: 10px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      border-radius: 14px;
+      padding: 10px;
     }
     .itemCard strong { display: block; margin-bottom: 4px; }
     .itemCard .qty { color: var(--warn); font-size: 12px; }
     .log {
-      height: 180px; overflow: auto; padding-right: 6px; font-size: 12px; color: #cfd8f7;
+      height: 180px;
+      overflow: auto;
+      padding-right: 6px;
+      font-size: 12px;
+      color: #cfd8f7;
       line-height: 1.45;
     }
-    .log p { margin: 0 0 8px; padding-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.08); }
+    .log p {
+      margin: 0 0 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed rgba(255,255,255,0.08);
+    }
     .footer {
-      padding: 0 14px 14px; color: var(--muted); font-size: 12px;
+      padding: 0 14px 14px;
+      color: var(--muted);
+      font-size: 12px;
     }
     input, select {
-      width: 100%; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line);
-      background: rgba(255,255,255,0.05); color: var(--text);
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
     }
-    .kbd { font-size: 11px; padding: 3px 6px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid var(--line); }
+    .kbd {
+      font-size: 11px;
+      padding: 3px 6px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--line);
+    }
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .mutedBox {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      padding: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .miniTitle { font-size: 12px; color: #dbe5ff; margin: 0 0 8px; }
+    .row {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      margin-bottom: 8px;
+    }
+    .rangeWrap {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+    .canvasTools {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      z-index: 2;
+    }
+    .gameShell { position: relative; }
+    .overlayNote {
+      position: absolute;
+      right: 14px;
+      top: 14px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 12px;
+      line-height: 1.45;
+      max-width: 240px;
+    }
     @media (max-width: 1200px) {
       .wrap { grid-template-columns: 1fr; }
       canvas { height: 560px; }
@@ -122,8 +222,11 @@
 </head>
 <body>
   <header>
-    <h1>CoreVerse — Phase 2 Game Base</h1>
-    <div class="sub">Open-world survival + crafting + building + AI NPCs + enemies + day/night. This is a strong browser-game foundation you can upload to GitHub and keep expanding.</div>
+    <h1>CoreVerse — Phase 2 Expanded</h1>
+    <div class="sub">
+      Open-world survival, crafting, building, NPC jobs, enemies, quests, weather, seasons, saving, and a cleaner engine layout.
+      This is still single-player, but it is built to grow into multiplayer later.
+    </div>
   </header>
 
   <div class="wrap">
@@ -170,7 +273,7 @@
         <div class="small">
           Move: <span class="kbd">WASD</span> or <span class="kbd">Arrow Keys</span><br />
           Place / delete: <span class="kbd">Click</span><br />
-          Craft: <span class="kbd">C</span><br />
+          Craft quick menu: <span class="kbd">C</span><br />
           Interact: <span class="kbd">E</span><br />
           Attack: <span class="kbd">Space</span><br />
           Pause: <span class="kbd">P</span>
@@ -192,14 +295,35 @@
         <div class="stat">Energy: <b id="energyText">100</b>
           <div class="bar energy"><div id="energyBar"></div></div>
         </div>
+        <div class="stat">XP: <b id="xpText">0</b> | Level: <b id="levelText">1</b>
+          <div class="bar xp"><div id="xpBar"></div></div>
+        </div>
         <div class="stat">Day: <b id="dayText">1</b> | Time: <b id="timeText">Morning</b></div>
+      </div>
+
+      <div class="section">
+        <h2>World Settings</h2>
+        <div class="row"><span class="small">Seed</span><span class="small" id="seedText">auto</span></div>
+        <div class="row"><span class="small">Weather</span><span class="small" id="weatherText">Clear</span></div>
+        <div class="row"><span class="small">Biome</span><span class="small" id="biomeText">Plains</span></div>
       </div>
     </aside>
 
     <main class="panel gameWrap">
-      <canvas id="game" width="1280" height="760"></canvas>
+      <div class="gameShell">
+        <div class="canvasTools">
+          <span class="chip">Selected tool: <b id="toolLabel">wall</b></span>
+          <span class="chip">Selected build: <b id="buildLabel">wall</b></span>
+          <span class="chip">Nearby NPCs: <b id="npcCount">0</b></span>
+          <span class="chip">Enemies: <b id="enemyCount">0</b></span>
+        </div>
+        <div class="overlayNote">
+          Click the world to place tiles. Craft items from the right panel. This engine uses one file so you can keep editing it in GitHub easily.
+        </div>
+        <canvas id="game" width="1280" height="760"></canvas>
+      </div>
       <div class="footer">
-        This phase is designed to feel like a real game base, not a tiny demo. It is still single-player in the browser, but the code is organized so multiplayer can be added later.
+        This version adds better data structures, quests, weather, day/night effects, minimap, and stronger game loops while staying browser-friendly.
       </div>
     </main>
 
@@ -214,12 +338,23 @@
         <div class="grid2">
           <button data-craft="woodWall">Wood Wall</button>
           <button data-craft="floor">Floor</button>
+          <button data-craft="road">Road</button>
           <button data-craft="torch">Torch</button>
           <button data-craft="sword">Sword</button>
           <button data-craft="pickaxe">Pickaxe</button>
           <button data-craft="farm">Farm Plot</button>
+          <button data-craft="bed">Bed</button>
+          <button data-craft="bridge">Bridge</button>
+          <button data-craft="crate">Crate</button>
+          <button data-craft="altar">Altar</button>
+          <button data-craft="generator">Generator</button>
         </div>
-        <div class="small" style="margin-top:8px;">Crafting costs resources from your inventory.</div>
+        <div class="small" style="margin-top:8px;">Crafting uses resources from your inventory.</div>
+      </div>
+
+      <div class="section">
+        <h2>Quest Board</h2>
+        <div class="mutedBox" id="questBox"></div>
       </div>
 
       <div class="section">
@@ -230,47 +365,74 @@
       <div class="section">
         <h2>Phase 3 Hooks</h2>
         <div class="small">
-          The code already keeps a clean place for future online multiplayer, account systems, matchmaking, world syncing, and server-side persistence.
+          Clean separation for multiplayer, server sync, accounts, cloud saves, map chunks, and AI pathfinding.
         </div>
       </div>
     </aside>
   </div>
 
   <script>
+    // =========================
+    // Core canvas and constants
+    // =========================
     const canvas = document.getElementById('game');
     const ctx = canvas.getContext('2d');
-
     const GRID = 32;
     const COLS = Math.floor(canvas.width / GRID);
     const ROWS = Math.floor(canvas.height / GRID);
-    const SAVE_KEY = 'coreverse_phase2_save_v1';
+    const SAVE_KEY = 'coreverse_phase2_expanded_save_v1';
 
-    let mode = 'survival';
-    let tool = 'wall';
-    let paused = false;
-    let day = 1;
-    let worldTime = 0; // 0..2399
+    // =========================
+    // Game state
+    // =========================
+    const game = {
+      mode: 'survival',
+      tool: 'wall',
+      paused: false,
+      day: 1,
+      worldTime: 0,
+      weather: 'clear',
+      weatherTimer: 0,
+      season: 0,
+      seed: Math.floor(Date.now() % 1000000),
+      questProgress: 0,
+      questGoal: 3,
+      questType: 'collectWood',
+      flashMessage: '',
+      flashTimer: 0,
+      cameraShake: 0
+    };
 
     const tiles = new Map();
     const npcs = [];
     const enemies = [];
     const particles = [];
+    const drops = [];
+    const projectiles = [];
     const logLines = [];
+    const clouds = [];
 
     const inventory = {
-      wood: 12,
-      stone: 8,
-      food: 6,
-      fiber: 4,
-      metal: 1,
-      seeds: 4,
+      wood: 24,
+      stone: 16,
+      food: 8,
+      fiber: 8,
+      metal: 2,
+      seeds: 6,
+      crystal: 0,
       torch: 0,
       sword: 0,
       pickaxe: 0,
       wall: 0,
       floor: 0,
       road: 0,
-      farm: 0
+      farm: 0,
+      bed: 0,
+      bridge: 0,
+      crate: 0,
+      altar: 0,
+      generator: 0,
+      coin: 0
     };
 
     let player = null;
@@ -283,7 +445,12 @@
       house: { fill: '#c99e61' },
       water: { fill: '#2f6dd6' },
       farm: { fill: '#7c5c2f' },
-      mine: { fill: '#7d7d7d' }
+      mine: { fill: '#7d7d7d' },
+      bed: { fill: '#b56fd2' },
+      bridge: { fill: '#8b5a2b' },
+      crate: { fill: '#8f6d3a' },
+      altar: { fill: '#9ea7ff' },
+      generator: { fill: '#8ad2ff' }
     };
 
     const modeButtons = {
@@ -299,77 +466,149 @@
       hungerText: document.getElementById('hungerText'),
       staminaText: document.getElementById('staminaText'),
       energyText: document.getElementById('energyText'),
+      xpText: document.getElementById('xpText'),
+      levelText: document.getElementById('levelText'),
       hpBar: document.getElementById('hpBar'),
       hungerBar: document.getElementById('hungerBar'),
       staminaBar: document.getElementById('staminaBar'),
       energyBar: document.getElementById('energyBar'),
+      xpBar: document.getElementById('xpBar'),
       dayText: document.getElementById('dayText'),
       timeText: document.getElementById('timeText'),
       invGrid: document.getElementById('inventoryGrid'),
-      log: document.getElementById('log')
+      log: document.getElementById('log'),
+      questBox: document.getElementById('questBox'),
+      toolLabel: document.getElementById('toolLabel'),
+      buildLabel: document.getElementById('buildLabel'),
+      npcCount: document.getElementById('npcCount'),
+      enemyCount: document.getElementById('enemyCount'),
+      weatherText: document.getElementById('weatherText'),
+      biomeText: document.getElementById('biomeText'),
+      seedText: document.getElementById('seedText')
     };
 
+    // =========================
+    // Utility helpers
+    // =========================
     function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
     function key(x, y) { return `${x},${y}`; }
     function inBounds(x, y) { return x >= 0 && y >= 0 && x < COLS && y < ROWS; }
     function rand(min, max) { return Math.random() * (max - min) + min; }
-
-    function addLog(text) {
-      logLines.unshift(`[Day ${day} | ${getTimeLabel()}] ${text}`);
-      logLines.splice(20);
-      renderLog();
-    }
-
-    function renderLog() {
-      el.log.innerHTML = logLines.map(line => `<p>${line}</p>`).join('');
-    }
-
-    function getTimeLabel() {
-      if (worldTime < 500) return 'Dawn';
-      if (worldTime < 1100) return 'Morning';
-      if (worldTime < 1700) return 'Afternoon';
-      if (worldTime < 2100) return 'Evening';
+    function randInt(min, max) { return Math.floor(rand(min, max + 1)); }
+    function chance(p) { return Math.random() < p; }
+    function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+    function lerp(a, b, t) { return a + (b - a) * t; }
+    function gridCenter(gx, gy) { return { x: gx * GRID + GRID / 2, y: gy * GRID + GRID / 2 }; }
+    function worldToGrid(px, py) { return { gx: Math.floor(px / GRID), gy: Math.floor(py / GRID) }; }
+    function timeLabel() {
+      const t = game.worldTime;
+      if (t < 500) return 'Dawn';
+      if (t < 1100) return 'Morning';
+      if (t < 1700) return 'Afternoon';
+      if (t < 2100) return 'Evening';
       return 'Night';
     }
-
-    function setMode(nextMode) {
-      mode = nextMode;
-      Object.entries(modeButtons).forEach(([k, b]) => b.classList.toggle('active', k === nextMode));
-      addLog(`Switched to ${nextMode} mode.`);
-      if (mode === 'battle' && enemies.length < 6) {
-        while (enemies.length < 6) spawnEnemy();
-      }
-      updateUI();
+    function biomeLabel() {
+      if (game.season % 4 === 0) return 'Plains';
+      if (game.season % 4 === 1) return 'Forest';
+      if (game.season % 4 === 2) return 'Desert';
+      return 'Tundra';
+    }
+    function log(text) {
+      logLines.unshift(`[Day ${game.day} | ${timeLabel()}] ${text}`);
+      logLines.splice(24);
+      renderLog();
+    }
+    function flash(text, duration = 120) {
+      game.flashMessage = text;
+      game.flashTimer = duration;
     }
 
-    function setTool(nextTool) {
-      tool = nextTool;
-      document.querySelectorAll('.toolBtn').forEach(btn => btn.classList.toggle('active', btn.dataset.tool === nextTool));
-      addLog(`Tool selected: ${nextTool}`);
-    }
-
-    function tileDef(type) {
-      return {
+    // =========================
+    // Tile and world functions
+    // =========================
+    function tileDef(type, hpOverride) {
+      const base = {
         type,
-        hp: type === 'tree' ? 3 : type === 'house' ? 8 : type === 'water' ? 999 : 4,
-        solid: ['wall', 'house', 'tree', 'mine'].includes(type),
-        walkable: ['floor', 'road', 'farm'].includes(type)
+        hp: hpOverride ?? (
+          type === 'tree' ? 3 :
+          type === 'house' ? 8 :
+          type === 'water' ? 999 :
+          type === 'mine' ? 4 :
+          type === 'altar' ? 6 :
+          type === 'generator' ? 6 :
+          4
+        ),
+        solid: ['wall', 'house', 'tree', 'mine', 'crate', 'altar', 'generator'].includes(type),
+        walkable: ['floor', 'road', 'farm', 'bridge', 'bed'].includes(type)
       };
+      return base;
     }
-
-    function placeTile(x, y, type) {
+    function placeTile(x, y, type, hpOverride) {
       if (!inBounds(x, y)) return;
-      tiles.set(key(x, y), tileDef(type));
+      tiles.set(key(x, y), tileDef(type, hpOverride));
     }
-
     function removeTile(x, y) {
       tiles.delete(key(x, y));
     }
-
     function getTile(x, y) {
       return tiles.get(key(x, y)) || null;
     }
+    function tileBlocks(type) {
+      return ['wall', 'house', 'tree', 'mine', 'crate', 'altar', 'generator'].includes(type);
+    }
 
+    function terrainNoise(x, y) {
+      const n = Math.sin((x * 12.9898 + y * 78.233 + game.seed) * 0.013) * 43758.5453;
+      return n - Math.floor(n);
+    }
+
+    function generateClouds() {
+      clouds.length = 0;
+      for (let i = 0; i < 7; i++) {
+        clouds.push({
+          x: rand(0, canvas.width),
+          y: rand(18, 120),
+          w: rand(120, 260),
+          h: rand(24, 56),
+          speed: rand(0.05, 0.22)
+        });
+      }
+    }
+
+    function generateWorld() {
+      tiles.clear();
+      for (let y = 0; y < ROWS; y++) {
+        for (let x = 0; x < COLS; x++) {
+          const n = terrainNoise(x, y);
+          if (n > 0.94) placeTile(x, y, 'water');
+          else if (n > 0.89) placeTile(x, y, 'tree');
+          else if (n > 0.86) placeTile(x, y, 'mine');
+          else if (n > 0.83) placeTile(x, y, 'road');
+          else if (n > 0.80) placeTile(x, y, 'farm');
+        }
+      }
+      for (let x = 5; x < 23; x++) placeTile(x, 14, 'road');
+      for (let x = 2; x < 6; x++) placeTile(x, 20, 'tree');
+      for (let x = 8; x < 11; x++) placeTile(x, 18, 'tree');
+      placeTile(14, 11, 'house');
+      placeTile(15, 11, 'house');
+      placeTile(14, 12, 'floor');
+      placeTile(15, 12, 'floor');
+      placeTile(20, 9, 'farm');
+      placeTile(21, 9, 'farm');
+      placeTile(7, 9, 'mine');
+      placeTile(8, 9, 'mine');
+      placeTile(11, 16, 'bed');
+      placeTile(12, 16, 'crate');
+      placeTile(18, 13, 'altar');
+      placeTile(24, 7, 'generator');
+      generateClouds();
+    }
+
+    // =========================
+    // Entities
+    // =========================
     function spawnPlayer() {
       player = {
         x: canvas.width / 2,
@@ -380,69 +619,250 @@
         hunger: 100,
         stamina: 100,
         energy: 100,
-        speed: 2.3,
+        xp: 0,
+        level: 1,
+        speed: 2.35,
         attackCooldown: 0,
         facing: 'down',
-        weapon: 'hand'
+        weapon: 'hand',
+        shield: 0,
+        regenTimer: 0,
+        respawnX: canvas.width / 2,
+        respawnY: canvas.height / 2
       };
-      addLog('Player spawned.');
+      log('Player spawned.');
       updateUI();
     }
 
     function spawnNpc(kind = 'villager') {
       npcs.push({
+        id: crypto?.randomUUID?.() || String(Math.random()),
         kind,
         x: rand(80, canvas.width - 80),
         y: rand(80, canvas.height - 80),
         vx: 0,
         vy: 0,
-        hp: 40,
+        hp: kind === 'builder' ? 50 : 40,
         homeX: rand(50, canvas.width - 50),
         homeY: rand(50, canvas.height - 50),
         mood: 'idle',
-        color: kind === 'builder' ? '#28d7a1' : '#ffcc66'
+        color: kind === 'builder' ? '#28d7a1' : kind === 'farmer' ? '#ffcc66' : '#6fb2ff',
+        task: kind === 'builder' ? 'build' : kind === 'farmer' ? 'farm' : 'wander',
+        talkCooldown: 0,
+        inventory: { wood: 0, food: 0, stone: 0 }
       });
-      addLog(`${kind} NPC spawned.`);
-      updateUI();
+      log(`${kind} NPC spawned.`);
     }
 
-    function spawnEnemy() {
+    function spawnEnemy(type = 'crawler') {
+      const variants = {
+        crawler: { color: '#ff5c7a', hp: 35, speed: 1.6, damage: 5 },
+        brute: { color: '#ff9f5c', hp: 70, speed: 1.1, damage: 9 },
+        flyer: { color: '#e16bff', hp: 28, speed: 1.9, damage: 4 }
+      };
+      const v = variants[type] || variants.crawler;
       enemies.push({
+        type,
         x: rand(40, canvas.width - 40),
         y: rand(40, canvas.height - 40),
         vx: 0,
         vy: 0,
-        hp: 35,
-        speed: 1.6,
-        color: '#ff5c7a',
-        attackCooldown: 0
+        hp: v.hp,
+        speed: v.speed,
+        color: v.color,
+        damage: v.damage,
+        attackCooldown: 0,
+        wanderTimer: randInt(30, 120),
+        state: 'seek',
+        dropTable: type === 'brute' ? ['food', 'stone', 'metal'] : ['food', 'fiber']
       });
-      addLog('Enemy spawned.');
-      updateUI();
+      log(`${type} enemy spawned.`);
     }
 
-    function damageTile(gx, gy, amount) {
-      const t = getTile(gx, gy);
-      if (!t) return;
-      t.hp -= amount;
-      spawnParticles(gx * GRID + GRID / 2, gy * GRID + GRID / 2, t.type === 'water' ? '#6fb2ff' : '#d7c4a2', 6);
-      if (t.hp <= 0) {
-        if (t.type === 'tree') inventory.wood += 2;
-        if (t.type === 'mine') inventory.stone += 2;
-        if (t.type === 'house') inventory.wood += 3;
-        if (t.type === 'farm') inventory.seeds += 1;
-        tiles.delete(key(gx, gy));
-        addLog(`Destroyed ${t.type}.`);
-      }
-      updateUI();
+    function spawnDrop(x, y, item, amount = 1) {
+      drops.push({ x, y, item, amount, vx: rand(-0.5, 0.5), vy: rand(-1, -0.2), life: 600 });
     }
 
-    function spawnParticles(x, y, color, count) {
+    function spawnParticle(x, y, color, count = 8, speed = 1.5, lifeMin = 20, lifeMax = 40) {
       for (let i = 0; i < count; i++) {
-        particles.push({ x, y, vx: rand(-1.5, 1.5), vy: rand(-1.5, 1.5), life: rand(20, 40), color });
+        particles.push({
+          x, y,
+          vx: rand(-speed, speed),
+          vy: rand(-speed, speed),
+          life: rand(lifeMin, lifeMax),
+          color
+        });
       }
     }
 
+    // =========================
+    // Inventory and crafting
+    // =========================
+    function renderInventory() {
+      const entries = Object.entries(inventory);
+      el.invGrid.innerHTML = entries.map(([name, qty]) => `
+        <div class="itemCard">
+          <strong>${name}</strong>
+          <div class="qty">x ${qty}</div>
+        </div>
+      `).join('');
+    }
+
+    const recipes = {
+      woodWall: { wood: 3 },
+      floor: { wood: 1, stone: 1 },
+      road: { stone: 2 },
+      torch: { wood: 1, fiber: 1 },
+      sword: { wood: 2, metal: 2 },
+      pickaxe: { wood: 2, stone: 2 },
+      farm: { wood: 2, seeds: 1 },
+      bed: { wood: 4, fiber: 2 },
+      bridge: { wood: 3, stone: 1 },
+      crate: { wood: 4 },
+      altar: { stone: 4, crystal: 1 },
+      generator: { metal: 3, stone: 2 }
+    };
+
+    function canAfford(costs) {
+      for (const [k, v] of Object.entries(costs)) {
+        if ((inventory[k] || 0) < v) return false;
+      }
+      return true;
+    }
+
+    function pay(costs) {
+      for (const [k, v] of Object.entries(costs)) inventory[k] -= v;
+    }
+
+    function craft(recipe) {
+      const costs = recipes[recipe];
+      if (!costs) return;
+      if (!canAfford(costs)) {
+        log(`Not enough resources to craft ${recipe}.`);
+        flash(`Missing resources for ${recipe}`);
+        return;
+      }
+      pay(costs);
+      if (recipe === 'woodWall') inventory.wall += 1;
+      if (recipe === 'floor') inventory.floor += 1;
+      if (recipe === 'road') inventory.road += 1;
+      if (recipe === 'torch') inventory.torch += 1;
+      if (recipe === 'sword') inventory.sword += 1;
+      if (recipe === 'pickaxe') inventory.pickaxe += 1;
+      if (recipe === 'farm') inventory.farm += 1;
+      if (recipe === 'bed') inventory.bed += 1;
+      if (recipe === 'bridge') inventory.bridge += 1;
+      if (recipe === 'crate') inventory.crate += 1;
+      if (recipe === 'altar') inventory.altar += 1;
+      if (recipe === 'generator') inventory.generator += 1;
+      log(`Crafted ${recipe}.`);
+      flash(`Crafted ${recipe}`);
+      updateUI();
+    }
+
+    function placeItemFromInventory(toolName, tileType = toolName) {
+      const map = {
+        wall: 'wall', floor: 'floor', road: 'road', farm: 'farm', bed: 'bed', bridge: 'bridge', crate: 'crate', altar: 'altar', generator: 'generator'
+      };
+      const invKey = map[toolName];
+      if (!invKey || (inventory[invKey] || 0) <= 0) return false;
+      inventory[invKey] -= 1;
+      return tileType;
+    }
+
+    // =========================
+    // Quest system
+    // =========================
+    function questText() {
+      const map = {
+        collectWood: 'Collect wood by destroying trees or picking up drops.',
+        craftTools: 'Craft a sword, pickaxe, or torch.',
+        buildHome: 'Build a small home with floor, wall, bed, and crate.',
+        defeatEnemies: 'Defeat enemies to protect the settlement.',
+        harvestFarm: 'Harvest food from farm plots.'
+      };
+      return map[game.questType] || 'Complete the active quest.';
+    }
+
+    function nextQuest() {
+      const list = ['collectWood', 'craftTools', 'buildHome', 'defeatEnemies', 'harvestFarm'];
+      game.questType = list[game.day % list.length];
+      game.questProgress = 0;
+      game.questGoal = game.questType === 'buildHome' ? 4 : game.questType === 'defeatEnemies' ? 2 : 3;
+      renderQuest();
+    }
+
+    function advanceQuest(amount = 1) {
+      game.questProgress += amount;
+      if (game.questProgress >= game.questGoal) {
+        inventory.coin += 5;
+        player.xp += 20;
+        log(`Quest complete: ${game.questType}. Reward gained.`);
+        flash('Quest complete!');
+        game.day += 0;
+        nextQuest();
+        updateXP();
+      }
+      renderQuest();
+    }
+
+    function renderQuest() {
+      el.questBox.innerHTML = `
+        <div class="miniTitle">Active quest</div>
+        <div style="color:#fff; font-weight:700; margin-bottom:6px;">${game.questType}</div>
+        <div style="margin-bottom:8px;">${questText()}</div>
+        <div>Progress: ${Math.min(game.questProgress, game.questGoal)} / ${game.questGoal}</div>
+      `;
+    }
+
+    // =========================
+    // UI updates
+    // =========================
+    function updateXP() {
+      while (player.xp >= player.level * 30) {
+        player.xp -= player.level * 30;
+        player.level++;
+        player.hp = clamp(player.hp + 15, 0, 100);
+        player.energy = clamp(player.energy + 20, 0, 100);
+        log(`Level up! You are now level ${player.level}.`);
+        flash(`Level ${player.level}`);
+      }
+    }
+
+    function updateUI() {
+      el.modeLabel.textContent = game.mode.charAt(0).toUpperCase() + game.mode.slice(1);
+      el.dayText.textContent = String(game.day);
+      el.timeText.textContent = timeLabel();
+      el.weatherText.textContent = game.weather.charAt(0).toUpperCase() + game.weather.slice(1);
+      el.biomeText.textContent = biomeLabel();
+      el.seedText.textContent = String(game.seed);
+      el.toolLabel.textContent = game.tool;
+      el.buildLabel.textContent = game.tool;
+      el.npcCount.textContent = String(npcs.length);
+      el.enemyCount.textContent = String(enemies.length);
+      if (!player) return;
+      el.hpText.textContent = Math.round(player.hp);
+      el.hungerText.textContent = Math.round(player.hunger);
+      el.staminaText.textContent = Math.round(player.stamina);
+      el.energyText.textContent = Math.round(player.energy);
+      el.xpText.textContent = Math.round(player.xp);
+      el.levelText.textContent = String(player.level);
+      el.hpBar.style.width = `${clamp(player.hp, 0, 100)}%`;
+      el.hungerBar.style.width = `${clamp(player.hunger, 0, 100)}%`;
+      el.staminaBar.style.width = `${clamp(player.stamina, 0, 100)}%`;
+      el.energyBar.style.width = `${clamp(player.energy, 0, 100)}%`;
+      el.xpBar.style.width = `${clamp((player.xp / (player.level * 30)) * 100, 0, 100)}%`;
+      renderInventory();
+      renderQuest();
+    }
+
+    function renderLog() {
+      el.log.innerHTML = logLines.map(line => `<p>${line}</p>`).join('');
+    }
+
+    // =========================
+    // Movement and collision
+    // =========================
     function canWalkAt(px, py) {
       const gx = Math.floor(px / GRID);
       const gy = Math.floor(py / GRID);
@@ -461,167 +881,172 @@
     function seekTarget(ent, tx, ty, speed) {
       const dx = tx - ent.x;
       const dy = ty - ent.y;
-      const dist = Math.hypot(dx, dy) || 1;
-      ent.vx = dx / dist;
-      ent.vy = dy / dist;
+      const d = Math.hypot(dx, dy) || 1;
+      ent.vx = dx / d;
+      ent.vy = dy / d;
       moveEntity(ent, speed);
     }
 
-    function updateTime() {
-      worldTime += 0.4;
-      if (worldTime >= 2400) {
-        worldTime = 0;
-        day++;
-        addLog('A new day has begun.');
+    // =========================
+    // Combat and interactions
+    // =========================
+    function damageTile(gx, gy, amount) {
+      const t = getTile(gx, gy);
+      if (!t) return false;
+      t.hp -= amount;
+      spawnParticle(gx * GRID + GRID / 2, gy * GRID + GRID / 2, t.type === 'water' ? '#6fb2ff' : '#d7c4a2', 6, 1.4, 18, 30);
+      if (t.hp <= 0) {
+        const dropMap = {
+          tree: { wood: 2 },
+          mine: { stone: 2 },
+          house: { wood: 3, coin: 1 },
+          farm: { seeds: 1, food: 1 },
+          crate: { wood: 2, food: 1 },
+          altar: { crystal: 1 },
+          generator: { metal: 1 }
+        };
+        const dropsHere = dropMap[t.type] || {};
+        for (const [item, amt] of Object.entries(dropsHere)) inventory[item] += amt;
+        tiles.delete(key(gx, gy));
+        log(`Destroyed ${t.type}.`);
+        if (t.type === 'tree') advanceQuest(1);
+        updateUI();
+        return true;
       }
-      el.dayText.textContent = String(day);
-      el.timeText.textContent = getTimeLabel();
+      updateUI();
+      return false;
     }
 
-    function updateUI() {
-      el.modeLabel.textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
-      if (player) {
-        el.hpText.textContent = Math.round(player.hp);
-        el.hungerText.textContent = Math.round(player.hunger);
-        el.staminaText.textContent = Math.round(player.stamina);
-        el.energyText.textContent = Math.round(player.energy);
-        el.hpBar.style.width = `${clamp(player.hp, 0, 100)}%`;
-        el.hungerBar.style.width = `${clamp(player.hunger, 0, 100)}%`;
-        el.staminaBar.style.width = `${clamp(player.stamina, 0, 100)}%`;
-        el.energyBar.style.width = `${clamp(player.energy, 0, 100)}%`;
-      }
-      renderInventory();
-      el.dayText.textContent = String(day);
-      el.timeText.textContent = getTimeLabel();
-    }
+    function attack() {
+      if (!player || player.attackCooldown > 0) return;
+      player.attackCooldown = inventory.sword > 0 ? 18 : 24;
+      const range = inventory.sword > 0 ? 60 : 38;
+      let hit = false;
+      const damage = inventory.sword > 0 ? 18 : 8;
 
-    function renderInventory() {
-      const entries = Object.entries(inventory);
-      el.invGrid.innerHTML = entries.map(([name, qty]) => `
-        <div class="itemCard">
-          <strong>${name}</strong>
-          <div class="qty">x ${qty}</div>
-        </div>
-      `).join('');
-    }
-
-    function craft(recipe) {
-      const costs = {
-        woodWall: { wood: 3, stone: 0, fiber: 0 },
-        floor: { wood: 1, stone: 1, fiber: 0 },
-        torch: { wood: 1, fiber: 1 },
-        sword: { wood: 2, metal: 2 },
-        pickaxe: { wood: 2, stone: 2 },
-        farm: { wood: 2, seeds: 1 }
-      }[recipe];
-      if (!costs) return;
-      for (const [k, v] of Object.entries(costs)) {
-        if ((inventory[k] || 0) < v) {
-          addLog(`Not enough ${k} to craft ${recipe}.`);
-          return;
+      enemies.forEach(e => {
+        if (dist(player, e) < range) {
+          e.hp -= damage;
+          hit = true;
+          spawnParticle(e.x, e.y, '#ff5c7a', 10);
+          player.xp += 4;
         }
+      });
+
+      npcs.forEach(n => {
+        if (game.mode === 'battle' && dist(player, n) < range) {
+          n.hp -= 6;
+          hit = true;
+        }
+      });
+
+      const g = worldToGrid(player.x, player.y);
+      const ox = player.facing === 'right' ? 1 : player.facing === 'left' ? -1 : 0;
+      const oy = player.facing === 'down' ? 1 : player.facing === 'up' ? -1 : 0;
+      damageTile(g.gx + ox, g.gy + oy, inventory.pickaxe > 0 ? 2 : 1);
+
+      if (hit) {
+        log('Attack connected.');
+        player.xp += 2;
+        updateXP();
       }
-      for (const [k, v] of Object.entries(costs)) inventory[k] -= v;
-      if (recipe === 'woodWall') inventory.wall += 1;
-      if (recipe === 'floor') inventory.floor += 1;
-      if (recipe === 'torch') inventory.torch += 1;
-      if (recipe === 'sword') inventory.sword += 1;
-      if (recipe === 'pickaxe') inventory.pickaxe += 1;
-      if (recipe === 'farm') inventory.farm += 1;
-      addLog(`Crafted ${recipe}.`);
       updateUI();
     }
 
     function interact() {
       if (!player) return;
-      const gx = Math.floor(player.x / GRID);
-      const gy = Math.floor(player.y / GRID);
+      const g = worldToGrid(player.x, player.y);
       const near = [
-        getTile(gx, gy), getTile(gx + 1, gy), getTile(gx - 1, gy),
-        getTile(gx, gy + 1), getTile(gx, gy - 1)
+        getTile(g.gx, g.gy), getTile(g.gx + 1, g.gy), getTile(g.gx - 1, g.gy),
+        getTile(g.gx, g.gy + 1), getTile(g.gx, g.gy - 1)
       ].filter(Boolean);
+
       if (near.some(t => t.type === 'farm')) {
         inventory.food += 2;
-        addLog('Harvested food from a farm plot.');
-      } else if (near.some(t => t.type === 'house')) {
-        player.energy = clamp(player.energy + 20, 0, 100);
-        addLog('Rested near a house.');
+        player.xp += 4;
+        log('Harvested food from a farm plot.');
+        advanceQuest(1);
+      } else if (near.some(t => t.type === 'house' || t.type === 'bed')) {
+        player.energy = clamp(player.energy + 24, 0, 100);
+        player.hp = clamp(player.hp + 8, 0, 100);
+        log('Rested near a home area.');
+      } else if (near.some(t => t.type === 'generator')) {
+        inventory.coin += 1;
+        player.energy = clamp(player.energy + 12, 0, 100);
+        log('Collected energy from a generator.');
       } else {
-        inventory.food = Math.max(0, inventory.food - 1);
-        player.hunger = clamp(player.hunger + 12, 0, 100);
-        addLog('Ate food.');
+        if (inventory.food > 0) {
+          inventory.food -= 1;
+          player.hunger = clamp(player.hunger + 12, 0, 100);
+          player.energy = clamp(player.energy + 4, 0, 100);
+          log('Ate food.');
+        } else {
+          log('No food available.');
+        }
       }
       updateUI();
     }
 
-    function attack() {
-      if (!player || player.attackCooldown > 0) return;
-      player.attackCooldown = 20;
-      const range = inventory.sword > 0 ? 56 : 36;
-      let hit = false;
-      enemies.forEach(e => {
-        const d = Math.hypot(e.x - player.x, e.y - player.y);
-        if (d < range) {
-          e.hp -= inventory.sword > 0 ? 18 : 8;
-          hit = true;
-        }
-      });
-      npcs.forEach(n => {
-        const d = Math.hypot(n.x - player.x, n.y - player.y);
-        if (d < range && mode === 'battle') {
-          n.hp -= 6;
-          hit = true;
-        }
-      });
-      const gx = Math.floor(player.x / GRID);
-      const gy = Math.floor(player.y / GRID);
-      damageTile(gx + (player.facing === 'right' ? 1 : player.facing === 'left' ? -1 : 0), gy + (player.facing === 'down' ? 1 : player.facing === 'up' ? -1 : 0), inventory.pickaxe > 0 ? 2 : 1);
-      if (hit) addLog('Attack hit something.');
-    }
-
+    // =========================
+    // Building / mouse placement
+    // =========================
     function placeOrDeleteAtMouse(mx, my) {
       const gx = Math.floor(mx / GRID);
       const gy = Math.floor(my / GRID);
       if (!inBounds(gx, gy)) return;
 
-      if (tool === 'delete') {
+      if (game.tool === 'delete') {
+        const t = getTile(gx, gy);
+        if (t) {
+          if (t.type === 'tree') inventory.wood += 1;
+          if (t.type === 'mine') inventory.stone += 1;
+        }
         removeTile(gx, gy);
-        addLog('Deleted tile.');
+        log('Deleted tile.');
+        updateUI();
         return;
       }
 
-      if (tool === 'mine') {
+      if (game.tool === 'mine') {
         placeTile(gx, gy, 'mine');
-        addLog('Placed mine tile.');
+        log('Placed mine tile.');
         return;
       }
 
-      if (tool === 'farm') {
-        if (inventory.farm > 0) {
-          inventory.farm -= 1;
-          placeTile(gx, gy, 'farm');
-          addLog('Placed farm plot.');
+      const directPlacers = {
+        farm: 'farm', bed: 'bed', bridge: 'bridge', crate: 'crate', altar: 'altar', generator: 'generator'
+      };
+
+      if (directPlacers[game.tool]) {
+        const invKey = directPlacers[game.tool];
+        if ((inventory[invKey] || 0) > 0) {
+          inventory[invKey] -= 1;
+          placeTile(gx, gy, directPlacers[game.tool]);
+          log(`Placed ${game.tool}.`);
         } else {
-          addLog('No farm plot in inventory. Craft one first.');
+          log(`No ${game.tool} in inventory. Craft it first.`);
         }
         updateUI();
         return;
       }
 
-      const counts = { wall: 'wall', floor: 'floor', road: 'road', tree: 'tree', house: 'house', water: 'water' };
-      const invMap = { wall: 'wall', floor: 'floor', road: 'road', tree: null, house: null, water: null };
-      if (invMap[tool]) {
-        if (inventory[invMap[tool]] > 0) {
-          inventory[invMap[tool]] -= 1;
-          placeTile(gx, gy, counts[tool]);
-          addLog(`Placed ${tool}.`);
-          updateUI();
+      if (game.tool === 'tree' || game.tool === 'house' || game.tool === 'water') {
+        placeTile(gx, gy, game.tool);
+        log(`Placed ${game.tool}.`);
+        return;
+      }
+
+      const placerMap = { wall: 'wall', floor: 'floor', road: 'road' };
+      if (placerMap[game.tool]) {
+        const invKey = placerMap[game.tool];
+        if ((inventory[invKey] || 0) > 0) {
+          inventory[invKey] -= 1;
+          placeTile(gx, gy, placerMap[game.tool]);
+          log(`Placed ${game.tool}.`);
         } else {
-          addLog(`No ${tool} in inventory. Craft or gather more.`);
+          log(`No ${game.tool} in inventory.`);
         }
-      } else {
-        placeTile(gx, gy, counts[tool]);
-        addLog(`Placed ${tool}.`);
+        updateUI();
       }
     }
 
@@ -634,70 +1059,89 @@
       placeOrDeleteAtMouse(mx, my);
     });
 
-    let keys = new Set();
+    // =========================
+    // Input
+    // =========================
+    const keys = new Set();
     document.addEventListener('keydown', (e) => {
       keys.add(e.key.toLowerCase());
       if (e.key.toLowerCase() === 'c') craftMenuQuick();
       if (e.key.toLowerCase() === 'e') interact();
       if (e.key === ' ' || e.key.toLowerCase() === 'space') attack();
-      if (e.key.toLowerCase() === 'p') paused = !paused;
+      if (e.key.toLowerCase() === 'p') game.paused = !game.paused;
     });
     document.addEventListener('keyup', (e) => keys.delete(e.key.toLowerCase()));
 
     function craftMenuQuick() {
-      const choice = prompt('Craft what? woodWall, floor, torch, sword, pickaxe, farm');
+      const choice = prompt('Craft what? woodWall, floor, road, torch, sword, pickaxe, farm, bed, bridge, crate, altar, generator');
       if (choice) craft(choice.trim());
     }
 
-    document.querySelectorAll('.toolBtn').forEach(btn => btn.addEventListener('click', () => setTool(btn.dataset.tool)));
-    document.querySelectorAll('[data-craft]').forEach(btn => btn.addEventListener('click', () => craft(btn.dataset.craft)));
+    document.querySelectorAll('.toolBtn').forEach(btn => {
+      btn.addEventListener('click', () => setTool(btn.dataset.tool));
+    });
+    document.querySelectorAll('[data-craft]').forEach(btn => {
+      btn.addEventListener('click', () => craft(btn.dataset.craft));
+    });
 
     modeButtons.survival.onclick = () => setMode('survival');
     modeButtons.sandbox.onclick = () => setMode('sandbox');
     modeButtons.battle.onclick = () => setMode('battle');
     modeButtons.city.onclick = () => setMode('city');
 
-    document.getElementById('spawnNpc').onclick = () => spawnNpc(mode === 'sandbox' ? 'builder' : 'villager');
-    document.getElementById('spawnEnemy').onclick = spawnEnemy;
-    document.getElementById('spawnPlayer').onclick = spawnPlayer;
+    document.getElementById('spawnNpc').onclick = () => spawnNpc(game.mode === 'sandbox' ? 'builder' : game.mode === 'city' ? 'farmer' : 'villager');
+    document.getElementById('spawnEnemy').onclick = () => spawnEnemy(chance(0.25) ? 'brute' : chance(0.5) ? 'flyer' : 'crawler');
+    document.getElementById('spawnPlayer').onclick = () => spawnPlayer();
 
-    document.getElementById('saveBtn').onclick = () => {
-      const save = {
-        mode, tool, day, worldTime, paused,
+    // =========================
+    // Save / load
+    // =========================
+    function serialize() {
+      return {
+        game,
         player,
         inventory,
         tiles: Array.from(tiles.entries()),
         npcs,
         enemies,
-        logLines
+        particles,
+        drops,
+        projectiles,
+        logLines,
+        clouds
       };
-      localStorage.setItem(SAVE_KEY, JSON.stringify(save));
-      addLog('Game saved.');
+    }
+
+    function applySave(save) {
+      if (!save) return;
+      Object.assign(game, save.game || {});
+      player = save.player || null;
+      Object.keys(inventory).forEach(k => inventory[k] = save.inventory?.[k] ?? inventory[k]);
+      tiles.clear();
+      (save.tiles || []).forEach(([k, v]) => tiles.set(k, v));
+      npcs.length = 0; (save.npcs || []).forEach(n => npcs.push(n));
+      enemies.length = 0; (save.enemies || []).forEach(en => enemies.push(en));
+      particles.length = 0; (save.particles || []).forEach(p => particles.push(p));
+      drops.length = 0; (save.drops || []).forEach(d => drops.push(d));
+      projectiles.length = 0; (save.projectiles || []).forEach(p => projectiles.push(p));
+      logLines.length = 0; (save.logLines || []).forEach(l => logLines.push(l));
+      clouds.length = 0; (save.clouds || []).forEach(c => clouds.push(c));
+      setTool(game.tool);
+      setMode(game.mode);
+      renderLog();
+      updateUI();
+    }
+
+    document.getElementById('saveBtn').onclick = () => {
+      localStorage.setItem(SAVE_KEY, JSON.stringify(serialize()));
+      log('Game saved.');
     };
 
     document.getElementById('loadBtn').onclick = () => {
       const raw = localStorage.getItem(SAVE_KEY);
-      if (!raw) return addLog('No save file found.');
-      const save = JSON.parse(raw);
-      mode = save.mode || 'survival';
-      tool = save.tool || 'wall';
-      day = save.day || 1;
-      worldTime = save.worldTime || 0;
-      paused = !!save.paused;
-      player = save.player || null;
-      Object.keys(inventory).forEach(k => inventory[k] = (save.inventory && save.inventory[k] != null) ? save.inventory[k] : inventory[k]);
-      tiles.clear();
-      (save.tiles || []).forEach(([k, v]) => tiles.set(k, v));
-      npcs.length = 0;
-      (save.npcs || []).forEach(n => npcs.push(n));
-      enemies.length = 0;
-      (save.enemies || []).forEach(en => enemies.push(en));
-      logLines.length = 0;
-      (save.logLines || []).forEach(l => logLines.push(l));
-      setTool(tool);
-      setMode(mode);
-      addLog('Game loaded.');
-      updateUI();
+      if (!raw) return log('No save file found.');
+      applySave(JSON.parse(raw));
+      log('Game loaded.');
     };
 
     document.getElementById('clearBtn').onclick = () => {
@@ -705,22 +1149,77 @@
       npcs.length = 0;
       enemies.length = 0;
       particles.length = 0;
-      player = null;
-      day = 1;
-      worldTime = 0;
-      Object.keys(inventory).forEach(k => {
-        if (typeof inventory[k] === 'number') inventory[k] = 0;
-      });
-      inventory.wood = 12;
-      inventory.stone = 8;
-      inventory.food = 6;
-      inventory.fiber = 4;
-      inventory.metal = 1;
-      inventory.seeds = 4;
-      addLog('World cleared.');
+      drops.length = 0;
+      projectiles.length = 0;
+      logLines.length = 0;
+      game.day = 1;
+      game.worldTime = 0;
+      game.weather = 'clear';
+      game.weatherTimer = 0;
+      game.season = 0;
+      Object.keys(inventory).forEach(k => inventory[k] = 0);
+      inventory.wood = 24;
+      inventory.stone = 16;
+      inventory.food = 8;
+      inventory.fiber = 8;
+      inventory.metal = 2;
+      inventory.seeds = 6;
+      generateWorld();
       spawnPlayer();
+      spawnNpc('villager');
+      spawnNpc('builder');
+      spawnNpc('farmer');
+      spawnEnemy('crawler');
+      nextQuest();
+      log('World cleared.');
       updateUI();
     };
+
+    // =========================
+    // Game modes
+    // =========================
+    function setMode(nextMode) {
+      game.mode = nextMode;
+      Object.entries(modeButtons).forEach(([k, b]) => b.classList.toggle('active', k === nextMode));
+      log(`Switched to ${nextMode} mode.`);
+      if (game.mode === 'battle') {
+        while (enemies.length < 6) spawnEnemy(chance(0.3) ? 'brute' : 'crawler');
+      }
+      updateUI();
+    }
+
+    function setTool(nextTool) {
+      game.tool = nextTool;
+      document.querySelectorAll('.toolBtn').forEach(btn => btn.classList.toggle('active', btn.dataset.tool === nextTool));
+      updateUI();
+      log(`Tool selected: ${nextTool}`);
+    }
+
+    // =========================
+    // World systems
+    // =========================
+    function updateTime() {
+      game.worldTime += 0.45;
+      if (game.worldTime >= 2400) {
+        game.worldTime = 0;
+        game.day++;
+        game.season++;
+        nextQuest();
+        log('A new day has begun.');
+      }
+      if (game.weatherTimer <= 0) {
+        const options = ['clear', 'rain', 'fog', 'storm'];
+        game.weather = options[randInt(0, options.length - 1)];
+        game.weatherTimer = randInt(1200, 2500);
+        log(`Weather changed to ${game.weather}.`);
+      } else {
+        game.weatherTimer--;
+      }
+      el.dayText.textContent = String(game.day);
+      el.timeText.textContent = timeLabel();
+      el.weatherText.textContent = game.weather.charAt(0).toUpperCase() + game.weather.slice(1);
+      el.biomeText.textContent = biomeLabel();
+    }
 
     function updatePlayer() {
       if (!player) return;
@@ -729,6 +1228,7 @@
       const down = keys.has('s') || keys.has('arrowdown');
       const left = keys.has('a') || keys.has('arrowleft');
       const right = keys.has('d') || keys.has('arrowright');
+
       if (up) { mvy -= 1; player.facing = 'up'; }
       if (down) { mvy += 1; player.facing = 'down'; }
       if (left) { mvx -= 1; player.facing = 'left'; }
@@ -740,7 +1240,7 @@
         player.vx = mvx / len;
         player.vy = mvy / len;
         moveEntity(player, player.speed);
-        player.stamina = clamp(player.stamina - 0.2, 0, 100);
+        player.stamina = clamp(player.stamina - 0.22, 0, 100);
       } else {
         player.vx = 0;
         player.vy = 0;
@@ -749,37 +1249,59 @@
 
       if (player.attackCooldown > 0) player.attackCooldown--;
 
-      if (mode === 'survival') {
+      if (game.mode === 'survival') {
         player.hunger = clamp(player.hunger - 0.03, 0, 100);
         if (player.hunger < 20) player.hp = clamp(player.hp - 0.03, 0, 100);
-        player.energy = clamp(player.energy - (moving ? 0.012 : 0.004), 0, 100);
-        if (player.energy < 20) player.stamina = clamp(player.stamina - 0.03, 0, 100);
-      } else if (mode === 'sandbox') {
+        player.energy = clamp(player.energy - (moving ? 0.014 : 0.005), 0, 100);
+      } else if (game.mode === 'sandbox') {
         player.energy = clamp(player.energy + 0.01, 0, 100);
-      } else if (mode === 'city') {
-        player.energy = clamp(player.energy + 0.005, 0, 100);
+      } else if (game.mode === 'city') {
+        player.energy = clamp(player.energy + 0.006, 0, 100);
+      }
+
+      if (game.weather === 'rain') {
+        player.speed = 2.15;
+      } else if (game.weather === 'storm') {
+        player.speed = 2.0;
+        player.energy = clamp(player.energy - 0.006, 0, 100);
+      } else {
+        player.speed = 2.35;
       }
 
       if (player.hp <= 0) {
-        addLog('You died. Respawning...');
-        spawnPlayer();
+        log('You died. Respawning...');
+        player.hp = 100;
+        player.hunger = 100;
+        player.stamina = 100;
+        player.energy = 100;
+        player.x = player.respawnX;
+        player.y = player.respawnY;
+        flash('Respawned');
       }
     }
 
     function updateNPCs() {
       npcs.forEach(n => {
+        n.talkCooldown = Math.max(0, n.talkCooldown - 1);
         const wandering = Math.random() < 0.02;
-        if (mode === 'sandbox') {
+        if (game.mode === 'sandbox') {
           if (wandering) {
             n.vx = rand(-1, 1);
             n.vy = rand(-1, 1);
           }
           moveEntity(n, 0.9);
-        } else if (mode === 'city') {
-          if (player && Math.random() < 0.01) seekTarget(n, player.x, player.y, 0.7);
+        } else if (game.mode === 'city') {
+          if (player && chance(0.008)) seekTarget(n, player.x, player.y, 0.7);
           else if (wandering) seekTarget(n, n.homeX, n.homeY, 0.5);
         } else {
           if (player) seekTarget(n, player.x, player.y, 0.6);
+        }
+
+        if (player && dist(player, n) < 26 && n.talkCooldown <= 0) {
+          n.talkCooldown = 240;
+          if (n.kind === 'builder') log('Builder: I can help expand the settlement.');
+          else if (n.kind === 'farmer') log('Farmer: Food is life. Keep the farm working.');
+          else log('Villager: Stay safe out there.');
         }
       });
     }
@@ -787,28 +1309,69 @@
     function updateEnemies() {
       enemies.forEach(e => {
         if (!player) return;
-        const dx = player.x - e.x;
-        const dy = player.y - e.y;
-        const dist = Math.hypot(dx, dy) || 1;
-        e.vx = dx / dist;
-        e.vy = dy / dist;
-        moveEntity(e, e.speed);
-        if (dist < 18 && e.attackCooldown <= 0) {
+        const d = dist(player, e);
+        if (d < 220) {
+          seekTarget(e, player.x, player.y, e.speed);
+          e.state = 'seek';
+        } else {
+          e.wanderTimer--;
+          e.state = 'wander';
+          if (e.wanderTimer <= 0) {
+            e.vx = rand(-1, 1);
+            e.vy = rand(-1, 1);
+            e.wanderTimer = randInt(45, 140);
+          }
+          moveEntity(e, e.speed * 0.45);
+        }
+        if (d < 18 && e.attackCooldown <= 0) {
           e.attackCooldown = 40;
-          player.hp = clamp(player.hp - 5, 0, 100);
-          spawnParticles(player.x, player.y, '#ff5c7a', 8);
-          addLog('Enemy hit you.');
+          const dmg = e.damage;
+          player.hp = clamp(player.hp - dmg, 0, 100);
+          spawnParticle(player.x, player.y, '#ff5c7a', 10, 1.8, 20, 34);
+          game.cameraShake = 8;
+          log('Enemy hit you.');
         }
         if (e.attackCooldown > 0) e.attackCooldown--;
       });
+
       for (let i = enemies.length - 1; i >= 0; i--) {
         if (enemies[i].hp <= 0) {
-          spawnParticles(enemies[i].x, enemies[i].y, '#ffcc66', 12);
+          const en = enemies[i];
+          spawnParticle(en.x, en.y, '#ffcc66', 12, 2.0, 18, 36);
+          en.dropTable.forEach(item => inventory[item] += 1);
+          inventory.coin += 2;
           enemies.splice(i, 1);
-          inventory.food += 1;
-          inventory.fiber += 1;
-          addLog('Enemy defeated.');
+          log('Enemy defeated.');
+          advanceQuest(1);
         }
+      }
+    }
+
+    function updateDrops() {
+      for (let i = drops.length - 1; i >= 0; i--) {
+        const d = drops[i];
+        d.x += d.vx;
+        d.y += d.vy;
+        d.vy += 0.02;
+        d.life--;
+        if (player && dist(player, d) < 20) {
+          inventory[d.item] = (inventory[d.item] || 0) + d.amount;
+          drops.splice(i, 1);
+          log(`Picked up ${d.amount} ${d.item}.`);
+          if (d.item === 'wood') advanceQuest(1);
+          continue;
+        }
+        if (d.life <= 0) drops.splice(i, 1);
+      }
+    }
+
+    function updateProjectiles() {
+      for (let i = projectiles.length - 1; i >= 0; i--) {
+        const p = projectiles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life--;
+        if (p.life <= 0) projectiles.splice(i, 1);
       }
     }
 
@@ -818,10 +1381,14 @@
         p.x += p.vx;
         p.y += p.vy;
         p.life -= 1;
+        p.vy += 0.01;
         if (p.life <= 0) particles.splice(i, 1);
       }
     }
 
+    // =========================
+    // Rendering
+    // =========================
     function drawTile(gx, gy, t) {
       const x = gx * GRID;
       const y = gy * GRID;
@@ -854,10 +1421,76 @@
         ctx.fillRect(x + 7, y + 7, 18, 18);
         ctx.fillStyle = '#8a8a8a';
         ctx.fillRect(x + 11, y + 11, 10, 10);
+      } else if (t.type === 'bed') {
+        ctx.fillStyle = '#9156bc';
+        ctx.fillRect(x + 4, y + 14, 24, 10);
+        ctx.fillStyle = '#6c3f97';
+        ctx.fillRect(x + 5, y + 10, 8, 8);
+      } else if (t.type === 'crate') {
+        ctx.fillStyle = '#6f5127';
+        ctx.fillRect(x + 6, y + 6, 20, 20);
+        ctx.fillStyle = '#8a6a38';
+        ctx.fillRect(x + 14, y + 6, 2, 20);
+        ctx.fillRect(x + 6, y + 14, 20, 2);
+      } else if (t.type === 'altar') {
+        ctx.fillStyle = '#c2c7ff';
+        ctx.beginPath();
+        ctx.arc(x + 16, y + 16, 7, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (t.type === 'generator') {
+        ctx.fillStyle = '#c0f0ff';
+        ctx.fillRect(x + 8, y + 8, 16, 16);
       }
     }
 
+    function drawClouds() {
+      clouds.forEach(c => {
+        c.x += c.speed;
+        if (c.x > canvas.width + c.w) c.x = -c.w;
+        ctx.fillStyle = 'rgba(255,255,255,0.16)';
+        ctx.beginPath();
+        ctx.ellipse(c.x, c.y, c.w * 0.28, c.h * 0.55, 0, 0, Math.PI * 2);
+        ctx.ellipse(c.x + c.w * 0.18, c.y + 2, c.w * 0.22, c.h * 0.45, 0, 0, Math.PI * 2);
+        ctx.ellipse(c.x - c.w * 0.16, c.y + 4, c.w * 0.20, c.h * 0.42, 0, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    function drawMinimap() {
+      const w = 140, h = 100;
+      const x = canvas.width - w - 16;
+      const y = canvas.height - h - 16;
+      ctx.fillStyle = 'rgba(0,0,0,0.42)';
+      ctx.fillRect(x, y, w, h);
+      ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+      ctx.strokeRect(x, y, w, h);
+
+      const sx = w / COLS;
+      const sy = h / ROWS;
+      for (const [k, t] of tiles.entries()) {
+        const [gx, gy] = k.split(',').map(Number);
+        ctx.fillStyle = t.type === 'water' ? '#2f6dd6' : t.type === 'tree' ? '#2eb96e' : t.type === 'house' ? '#c99e61' : t.type === 'farm' ? '#b57d34' : t.type === 'mine' ? '#7d7d7d' : t.type === 'road' ? '#666b73' : t.type === 'altar' ? '#9ea7ff' : '#8ad2ff';
+        ctx.fillRect(x + gx * sx, y + gy * sy, Math.max(1, sx), Math.max(1, sy));
+      }
+      if (player) {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(x + (player.x / GRID) * sx - 1, y + (player.y / GRID) * sy - 1, 3, 3);
+      }
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.font = '11px Arial';
+      ctx.fillText('Minimap', x + 8, y + 14);
+    }
+
     function drawWorld() {
+      ctx.save();
+      if (game.cameraShake > 0) {
+        const s = game.cameraShake / 2;
+        ctx.translate(rand(-s, s), rand(-s, s));
+        game.cameraShake *= 0.85;
+        if (game.cameraShake < 0.1) game.cameraShake = 0;
+      }
+
+      // background sky
       const sky = ctx.createLinearGradient(0, 0, 0, canvas.height);
       sky.addColorStop(0, '#142750');
       sky.addColorStop(0.6, '#09111d');
@@ -865,15 +1498,40 @@
       ctx.fillStyle = sky;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Lighting based on time of day
+      drawClouds();
+
+      // weather overlay
+      if (game.weather === 'rain') {
+        ctx.fillStyle = 'rgba(115,160,255,0.08)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = 'rgba(140,190,255,0.18)';
+        for (let i = 0; i < 60; i++) {
+          const x = (i * 47 + (Date.now() * 0.3)) % canvas.width;
+          const y = (i * 73 + (Date.now() * 0.6)) % canvas.height;
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(x - 6, y + 18);
+          ctx.stroke();
+        }
+      }
+      if (game.weather === 'fog') {
+        ctx.fillStyle = 'rgba(220,230,255,0.09)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      if (game.weather === 'storm') {
+        ctx.fillStyle = 'rgba(0,0,0,0.08)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // lighting based on time of day
       let darkness = 0;
-      const hour = worldTime / 100;
-      if (hour < 5 || hour > 19) darkness = 0.42;
-      else if (hour < 7 || hour > 17) darkness = 0.18;
+      const hour = game.worldTime / 100;
+      if (hour < 5 || hour > 19) darkness = 0.46;
+      else if (hour < 7 || hour > 17) darkness = 0.20;
       ctx.fillStyle = `rgba(0,0,0,${darkness})`;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Grid
+      // grid
       ctx.strokeStyle = 'rgba(255,255,255,0.04)';
       for (let x = 0; x <= canvas.width; x += GRID) {
         ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
@@ -882,11 +1540,19 @@
         ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
       }
 
-      // Tiles
+      // tiles
       for (const [k, t] of tiles.entries()) {
         const [gx, gy] = k.split(',').map(Number);
         drawTile(gx, gy, t);
       }
+
+      // drops
+      drops.forEach(d => {
+        ctx.fillStyle = d.item === 'wood' ? '#8b5a2b' : d.item === 'stone' ? '#8f8f8f' : d.item === 'food' ? '#ffcc66' : d.item === 'fiber' ? '#65f2c9' : d.item === 'metal' ? '#d6d6d6' : d.item === 'seed' || d.item === 'seeds' ? '#a8d46f' : '#ffffff';
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, 4, 0, Math.PI * 2);
+        ctx.fill();
+      });
 
       // NPCs
       npcs.forEach(n => {
@@ -897,10 +1563,10 @@
         ctx.fillStyle = 'rgba(255,255,255,0.18)';
         ctx.fillRect(n.x - 12, n.y - 18, 24, 4);
         ctx.fillStyle = n.hp > 20 ? '#28d7a1' : '#ff5c7a';
-        ctx.fillRect(n.x - 12, n.y - 18, 24 * (n.hp / 40), 4);
+        ctx.fillRect(n.x - 12, n.y - 18, 24 * (n.hp / Math.max(1, n.kind === 'builder' ? 50 : 40)), 4);
       });
 
-      // Enemies
+      // enemies
       enemies.forEach(e => {
         ctx.fillStyle = e.color;
         ctx.beginPath();
@@ -908,13 +1574,19 @@
         ctx.fill();
       });
 
-      // Particles
+      // projectiles
+      projectiles.forEach(p => {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, 3, 3);
+      });
+
+      // particles
       particles.forEach(p => {
         ctx.fillStyle = p.color;
         ctx.fillRect(p.x, p.y, 2, 2);
       });
 
-      // Player
+      // player
       if (player) {
         ctx.fillStyle = '#7c5cff';
         ctx.beginPath();
@@ -922,7 +1594,6 @@
         ctx.fill();
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(player.x - 2, player.y - 17, 4, 4);
-
         ctx.fillStyle = 'rgba(255,255,255,0.2)';
         ctx.fillRect(player.x - 16, player.y - 24, 32, 5);
         ctx.fillStyle = '#28d7a1';
@@ -932,59 +1603,86 @@
       // HUD overlay
       ctx.fillStyle = 'rgba(255,255,255,0.92)';
       ctx.font = 'bold 16px Arial';
-      ctx.fillText(`CoreVerse | ${mode.toUpperCase()} | Day ${day} | ${getTimeLabel()}`, 20, 28);
+      ctx.fillText(`CoreVerse | ${game.mode.toUpperCase()} | Day ${game.day} | ${timeLabel()}`, 20, 28);
       ctx.font = '13px Arial';
       ctx.fillStyle = 'rgba(255,255,255,0.68)';
-      ctx.fillText(`Build, survive, craft, and expand this world.`, 20, 48);
+      ctx.fillText('Build, survive, craft, and expand this world.', 20, 48);
 
-      if (paused) {
+      if (game.flashTimer > 0) {
+        ctx.fillStyle = 'rgba(0,0,0,0.35)';
+        ctx.fillRect(canvas.width / 2 - 110, 60, 220, 34);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 15px Arial';
+        ctx.fillText(game.flashMessage, canvas.width / 2 - ctx.measureText(game.flashMessage).width / 2, 82);
+        game.flashTimer--;
+      }
+
+      if (game.paused) {
         ctx.fillStyle = 'rgba(0,0,0,0.55)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 38px Arial';
         ctx.fillText('PAUSED', canvas.width / 2 - 80, canvas.height / 2);
       }
+
+      drawMinimap();
+      ctx.restore();
+    }
+
+    // =========================
+    // Main loop
+    // =========================
+    function updateGame() {
+      if (game.paused) return;
+      updateTime();
+      updatePlayer();
+      updateNPCs();
+      updateEnemies();
+      updateDrops();
+      updateProjectiles();
+      updateParticles();
+      updateUI();
     }
 
     function gameLoop() {
-      if (!paused) {
-        updateTime();
-        updatePlayer();
-        updateNPCs();
-        updateEnemies();
-        updateParticles();
-      }
+      updateGame();
       drawWorld();
       requestAnimationFrame(gameLoop);
     }
 
-    // Initial world
+    // =========================
+    // Initial setup
+    // =========================
     function seedWorld() {
-      for (let x = 5; x < 23; x++) placeTile(x, 14, 'road');
-      for (let x = 2; x < 6; x++) placeTile(x, 20, 'tree');
-      for (let x = 8; x < 11; x++) placeTile(x, 18, 'tree');
-      placeTile(14, 11, 'house');
-      placeTile(15, 11, 'house');
-      placeTile(14, 12, 'floor');
-      placeTile(15, 12, 'floor');
-      placeTile(20, 9, 'farm');
-      placeTile(21, 9, 'farm');
-      placeTile(7, 9, 'mine');
-      placeTile(8, 9, 'mine');
+      generateWorld();
       spawnPlayer();
       spawnNpc('villager');
       spawnNpc('builder');
-      spawnEnemy();
-      spawnEnemy();
-      addLog('World created.');
+      spawnNpc('farmer');
+      spawnEnemy('crawler');
+      spawnEnemy('crawler');
+      nextQuest();
+      log('World created.');
+      flash('CoreVerse Ready');
+      updateUI();
     }
 
-    // Phase 3 note: multiplayer would be added with a server and socket sync.
-    // This file is built so the game logic, rendering, inventory, and world state are separated cleanly.
+    // hooks / placeholder systems for future expansion
+    function tickAIPlanning() {
+      // Future pathfinding, jobs, and regional simulation.
+    }
+    function tickEconomy() {
+      // Future shops, prices, markets, taxes, and trading.
+    }
+    function tickWorldEvents() {
+      // Future raids, festivals, disasters, and random events.
+    }
 
+    // Start
     seedWorld();
     setMode('survival');
     setTool('wall');
+    renderLog();
     updateUI();
     gameLoop();
   </script>
