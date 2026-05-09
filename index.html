@@ -3,48 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CoreVerse — Phase 2 Expanded</title>
+  <title>NoteFlow — Notes Sharing Platform</title>
   <style>
     :root {
-      --bg: #07111f;
-      --panel: rgba(14, 22, 41, 0.94);
-      --panel2: rgba(22, 33, 60, 0.95);
+      --bg: #08111f;
+      --panel: rgba(14, 23, 42, 0.94);
+      --panel2: rgba(22, 33, 60, 0.96);
       --text: #edf3ff;
-      --muted: #95a6cf;
+      --muted: #97a9d3;
       --accent: #7c5cff;
       --accent2: #28d7a1;
       --warn: #ffcc66;
       --danger: #ff5c7a;
       --line: rgba(255,255,255,0.08);
       --shadow: 0 14px 40px rgba(0,0,0,0.35);
-      --good: #4ee39f;
-      --info: #6fb2ff;
     }
+
     * { box-sizing: border-box; }
-    html, body {
-      margin: 0;
-      min-height: 100%;
-      background: radial-gradient(circle at top, #16274e 0%, var(--bg) 60%);
-      color: var(--text);
-      font-family: Arial, Helvetica, sans-serif;
-    }
-    button, input, select { font: inherit; }
+    html, body { margin: 0; min-height: 100%; background: radial-gradient(circle at top, #182750 0%, var(--bg) 60%); color: var(--text); font-family: Arial, Helvetica, sans-serif; }
+    body { padding: 0; }
+
     header {
       position: sticky; top: 0; z-index: 10;
-      backdrop-filter: blur(12px);
-      background: rgba(6, 12, 24, 0.68);
+      backdrop-filter: blur(14px);
+      background: rgba(5, 11, 22, 0.68);
       border-bottom: 1px solid var(--line);
-      padding: 14px 18px;
+      padding: 18px;
     }
+
     h1 { margin: 0 0 6px; font-size: 24px; }
-    .sub { color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .sub { color: var(--muted); font-size: 13px; }
+
     .wrap {
       display: grid;
-      grid-template-columns: 320px 1fr 320px;
+      grid-template-columns: 360px 1fr;
       gap: 14px;
       padding: 14px;
       align-items: start;
     }
+
     .panel {
       background: var(--panel);
       border: 1px solid var(--line);
@@ -52,12 +49,37 @@
       box-shadow: var(--shadow);
       overflow: hidden;
     }
-    .sidebar, .rightbar { padding: 14px; }
+
+    .left, .right { padding: 14px; }
     .section { margin-bottom: 16px; }
-    .section:last-child { margin-bottom: 0; }
+    .section h2 {
+      margin: 0 0 10px;
+      font-size: 14px;
+      letter-spacing: 0.2px;
+      color: #dbe5ff;
+    }
+
+    input, textarea, select, button {
+      font: inherit;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 11px 12px;
+      outline: none;
+    }
+
+    textarea { min-height: 160px; resize: vertical; line-height: 1.45; }
+    input::placeholder, textarea::placeholder { color: #8ea0cb; }
+
     .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-    .grid4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; }
+
     button {
       border: 0;
       border-radius: 12px;
@@ -68,1623 +90,604 @@
       font-weight: 700;
       transition: transform .08s ease, filter .08s ease, outline .08s ease;
     }
+
     button:hover { filter: brightness(1.08); }
     button:active { transform: translateY(1px); }
     button.active { outline: 2px solid var(--accent); }
+    button.primary { background: linear-gradient(135deg, var(--accent), #9b79ff); }
     button.good { background: linear-gradient(135deg, var(--accent2), #1fb07f); color: #03110c; }
-    button.primary { background: linear-gradient(135deg, var(--accent), #9f7cff); }
-    button.warn { background: linear-gradient(135deg, var(--warn), #ffd98f); color: #281b00; }
-    button.danger { background: linear-gradient(135deg, var(--danger), #ff8b9d); color: #27050b; }
-    .small { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    button.warn { background: linear-gradient(135deg, var(--warn), #ffd98f); color: #241900; }
+    button.danger { background: linear-gradient(135deg, var(--danger), #ff8b9d); color: #25050b; }
+
+    .tiny { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 180px;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
     .stat {
       padding: 10px 12px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: 14px;
       background: rgba(255,255,255,0.04);
-      margin-bottom: 8px;
+      border: 1px solid var(--line);
       font-size: 13px;
     }
-    .stat b { color: #fff; }
-    .bar {
-      height: 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.08);
-      overflow: hidden;
-      margin-top: 6px;
-    }
-    .bar > div { height: 100%; width: 50%; border-radius: inherit; }
-    .bar.hp > div { background: linear-gradient(90deg, #ff5c7a, #ff9aa9); }
-    .bar.hunger > div { background: linear-gradient(90deg, #ffcc66, #ffe1a0); }
-    .bar.stamina > div { background: linear-gradient(90deg, #28d7a1, #65f2c9); }
-    .bar.energy > div { background: linear-gradient(90deg, #7c5cff, #b38bff); }
-    .bar.xp > div { background: linear-gradient(90deg, #6fb2ff, #b7dcff); }
-    .gameWrap { padding: 12px; }
-    canvas {
-      width: 100%;
-      height: 760px;
-      display: block;
-      border-radius: 18px;
-      background: linear-gradient(180deg, #0e1731, #070b13 60%, #06080f);
-      border: 1px solid var(--line);
-      image-rendering: pixelated;
-    }
-    .tinyRow { display: flex; gap: 8px; flex-wrap: wrap; }
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      font-size: 12px;
-      margin: 2px 4px 2px 0;
-    }
-    .inventory {
+
+    .stat b { display: block; margin-top: 5px; font-size: 16px; }
+
+    .notes {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 12px;
     }
-    .itemCard {
+
+    .note {
       border: 1px solid var(--line);
       background: rgba(255,255,255,0.04);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .note header {
+      position: static;
+      background: transparent;
+      backdrop-filter: none;
+      border: 0;
+      padding: 0;
+      margin-bottom: 10px;
+    }
+
+    .note h3 { margin: 0 0 6px; font-size: 17px; }
+    .meta { color: var(--muted); font-size: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(124,92,255,0.16);
+      color: #dcd1ff;
+      border: 1px solid rgba(124,92,255,0.22);
+      font-size: 11px;
+    }
+
+    .note p {
+      margin: 10px 0;
+      color: #dce5ff;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .noteActions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .noteActions button { padding: 8px 10px; font-size: 12px; }
+
+    .empty {
+      padding: 20px;
+      border: 1px dashed rgba(255,255,255,0.16);
+      border-radius: 16px;
+      text-align: center;
+      color: var(--muted);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .toast {
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      background: rgba(10,16,28,0.96);
+      border: 1px solid var(--line);
       border-radius: 14px;
-      padding: 10px;
+      padding: 12px 14px;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: 0.2s ease;
+      max-width: 360px;
+      color: var(--text);
+      font-size: 13px;
     }
-    .itemCard strong { display: block; margin-bottom: 4px; }
-    .itemCard .qty { color: var(--warn); font-size: 12px; }
-    .log {
-      height: 180px;
-      overflow: auto;
-      padding-right: 6px;
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    .saveCard {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .saveCard code {
+      display: block;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
       font-size: 12px;
-      color: #cfd8f7;
+      color: #dfe7ff;
+      margin-top: 8px;
       line-height: 1.45;
+      user-select: all;
     }
-    .log p {
-      margin: 0 0 8px;
-      padding-bottom: 8px;
-      border-bottom: 1px dashed rgba(255,255,255,0.08);
-    }
+
     .footer {
       padding: 0 14px 14px;
       color: var(--muted);
       font-size: 12px;
     }
-    input, select {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.05);
-      color: var(--text);
-    }
-    .kbd {
-      font-size: 11px;
-      padding: 3px 6px;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid var(--line);
-    }
-    .split {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    .mutedBox {
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.03);
-      border-radius: 14px;
-      padding: 10px;
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.45;
-    }
-    .miniTitle { font-size: 12px; color: #dbe5ff; margin: 0 0 8px; }
-    .row {
-      display: flex; align-items: center; justify-content: space-between; gap: 10px;
-      margin-bottom: 8px;
-    }
-    .rangeWrap {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 8px;
-      align-items: center;
-    }
-    .canvasTools {
-      position: absolute;
-      top: 14px;
-      left: 14px;
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      z-index: 2;
-    }
-    .gameShell { position: relative; }
-    .overlayNote {
-      position: absolute;
-      right: 14px;
-      top: 14px;
-      padding: 10px 12px;
-      border-radius: 14px;
-      background: rgba(0,0,0,0.4);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #fff;
-      font-size: 12px;
-      line-height: 1.45;
-      max-width: 240px;
-    }
-    @media (max-width: 1200px) {
+
+    @media (max-width: 1100px) {
       .wrap { grid-template-columns: 1fr; }
-      canvas { height: 560px; }
+      .topbar { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 620px) {
+      .stats { grid-template-columns: 1fr; }
+      .grid3 { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>CoreVerse — Phase 2 Expanded</h1>
-    <div class="sub">
-      Open-world survival, crafting, building, NPC jobs, enemies, quests, weather, seasons, saving, and a cleaner engine layout.
-      This is still single-player, but it is built to grow into multiplayer later.
-    </div>
+    <h1>NoteFlow — Notes Sharing Platform</h1>
+    <div class="sub">Create notes, tag them, search them, share them with a link, and save them in the browser.</div>
   </header>
 
   <div class="wrap">
-    <aside class="panel sidebar">
+    <aside class="panel left">
       <div class="section">
-        <h2>Game Modes</h2>
+        <h2>Create a Note</h2>
+        <input id="titleInput" placeholder="Note title" maxlength="80" />
+        <div style="height:8px"></div>
+        <textarea id="contentInput" placeholder="Write your note here..."></textarea>
+        <div style="height:8px"></div>
+        <input id="tagsInput" placeholder="Tags separated by commas, like: school, coding, ideas" />
+        <div style="height:8px"></div>
+        <select id="privacyInput">
+          <option value="public">Public</option>
+          <option value="private">Private</option>
+        </select>
+        <div style="height:10px"></div>
+        <div class="row">
+          <button id="saveNoteBtn" class="good">Save Note</button>
+          <button id="clearFormBtn">Clear</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Filter & Search</h2>
         <div class="grid2">
-          <button id="modeSurvival" class="active">Survival</button>
-          <button id="modeSandbox">Sandbox AI</button>
-          <button id="modeBattle">Battle Royale</button>
-          <button id="modeCity">City Builder</button>
+          <button class="filterBtn active" data-filter="all">All</button>
+          <button class="filterBtn" data-filter="public">Public</button>
+          <button class="filterBtn" data-filter="private">Private</button>
+          <button class="filterBtn" data-filter="starred">Starred</button>
         </div>
+        <div style="height:8px"></div>
+        <input id="searchInput" placeholder="Search notes..." />
+        <div style="height:8px"></div>
+        <input id="tagSearchInput" placeholder="Filter by tag, like: coding" />
       </div>
 
       <div class="section">
-        <h2>Build Tools</h2>
-        <div class="grid3">
-          <button data-tool="wall" class="toolBtn active">Wall</button>
-          <button data-tool="floor" class="toolBtn">Floor</button>
-          <button data-tool="road" class="toolBtn">Road</button>
-          <button data-tool="tree" class="toolBtn">Tree</button>
-          <button data-tool="house" class="toolBtn">House</button>
-          <button data-tool="water" class="toolBtn">Water</button>
-          <button data-tool="delete" class="toolBtn danger">Delete</button>
-          <button data-tool="mine" class="toolBtn warn">Mine</button>
-          <button data-tool="farm" class="toolBtn good">Farm</button>
+        <h2>Storage & Sharing</h2>
+        <div class="row">
+          <button id="exportBtn" class="primary">Export JSON</button>
+          <button id="importBtn">Import JSON</button>
+          <button id="clearAllBtn" class="danger">Clear All</button>
         </div>
-      </div>
-
-      <div class="section">
-        <h2>Actions</h2>
-        <div class="tinyRow">
-          <button id="spawnNpc" class="good">Spawn NPC</button>
-          <button id="spawnEnemy" class="danger">Spawn Enemy</button>
-          <button id="spawnPlayer" class="primary">Respawn</button>
-          <button id="saveBtn">Save</button>
-          <button id="loadBtn">Load</button>
-          <button id="clearBtn" class="danger">Clear</button>
+        <div style="height:10px"></div>
+        <div class="saveCard">
+          <div class="tiny">Share a note link by copying the generated URL from any note card. The link opens the note on the same page.</div>
         </div>
-      </div>
-
-      <div class="section">
-        <h2>Controls</h2>
-        <div class="small">
-          Move: <span class="kbd">WASD</span> or <span class="kbd">Arrow Keys</span><br />
-          Place / delete: <span class="kbd">Click</span><br />
-          Craft quick menu: <span class="kbd">C</span><br />
-          Interact: <span class="kbd">E</span><br />
-          Attack: <span class="kbd">Space</span><br />
-          Pause: <span class="kbd">P</span>
-        </div>
-      </div>
-
-      <div class="section">
-        <h2>Player Stats</h2>
-        <div class="stat"><b id="modeLabel">Survival</b></div>
-        <div class="stat">HP: <b id="hpText">100</b>
-          <div class="bar hp"><div id="hpBar"></div></div>
-        </div>
-        <div class="stat">Hunger: <b id="hungerText">100</b>
-          <div class="bar hunger"><div id="hungerBar"></div></div>
-        </div>
-        <div class="stat">Stamina: <b id="staminaText">100</b>
-          <div class="bar stamina"><div id="staminaBar"></div></div>
-        </div>
-        <div class="stat">Energy: <b id="energyText">100</b>
-          <div class="bar energy"><div id="energyBar"></div></div>
-        </div>
-        <div class="stat">XP: <b id="xpText">0</b> | Level: <b id="levelText">1</b>
-          <div class="bar xp"><div id="xpBar"></div></div>
-        </div>
-        <div class="stat">Day: <b id="dayText">1</b> | Time: <b id="timeText">Morning</b></div>
-      </div>
-
-      <div class="section">
-        <h2>World Settings</h2>
-        <div class="row"><span class="small">Seed</span><span class="small" id="seedText">auto</span></div>
-        <div class="row"><span class="small">Weather</span><span class="small" id="weatherText">Clear</span></div>
-        <div class="row"><span class="small">Biome</span><span class="small" id="biomeText">Plains</span></div>
       </div>
     </aside>
 
-    <main class="panel gameWrap">
-      <div class="gameShell">
-        <div class="canvasTools">
-          <span class="chip">Selected tool: <b id="toolLabel">wall</b></span>
-          <span class="chip">Selected build: <b id="buildLabel">wall</b></span>
-          <span class="chip">Nearby NPCs: <b id="npcCount">0</b></span>
-          <span class="chip">Enemies: <b id="enemyCount">0</b></span>
-        </div>
-        <div class="overlayNote">
-          Click the world to place tiles. Craft items from the right panel. This engine uses one file so you can keep editing it in GitHub easily.
-        </div>
-        <canvas id="game" width="1280" height="760"></canvas>
+    <main class="panel right">
+      <div class="stats">
+        <div class="stat">Total Notes<b id="totalNotes">0</b></div>
+        <div class="stat">Public<b id="publicNotes">0</b></div>
+        <div class="stat">Private<b id="privateNotes">0</b></div>
+        <div class="stat">Starred<b id="starredNotes">0</b></div>
       </div>
-      <div class="footer">
-        This version adds better data structures, quests, weather, day/night effects, minimap, and stronger game loops while staying browser-friendly.
+
+      <div class="topbar">
+        <input id="sortSelect" as="select" list="sortOptions" value="Newest" readonly />
+        <input id="ownerInput" placeholder="Your name or username" />
+        <button id="saveOwnerBtn" class="warn">Save Owner</button>
       </div>
+
+      <div class="notes" id="notesList"></div>
+      <div class="footer">Tip: Add Firebase or Supabase later if you want real online accounts and multi-user cloud sync.</div>
     </main>
-
-    <aside class="panel rightbar">
-      <div class="section">
-        <h2>Inventory</h2>
-        <div class="inventory" id="inventoryGrid"></div>
-      </div>
-
-      <div class="section">
-        <h2>Crafting</h2>
-        <div class="grid2">
-          <button data-craft="woodWall">Wood Wall</button>
-          <button data-craft="floor">Floor</button>
-          <button data-craft="road">Road</button>
-          <button data-craft="torch">Torch</button>
-          <button data-craft="sword">Sword</button>
-          <button data-craft="pickaxe">Pickaxe</button>
-          <button data-craft="farm">Farm Plot</button>
-          <button data-craft="bed">Bed</button>
-          <button data-craft="bridge">Bridge</button>
-          <button data-craft="crate">Crate</button>
-          <button data-craft="altar">Altar</button>
-          <button data-craft="generator">Generator</button>
-        </div>
-        <div class="small" style="margin-top:8px;">Crafting uses resources from your inventory.</div>
-      </div>
-
-      <div class="section">
-        <h2>Quest Board</h2>
-        <div class="mutedBox" id="questBox"></div>
-      </div>
-
-      <div class="section">
-        <h2>World Log</h2>
-        <div class="log" id="log"></div>
-      </div>
-
-      <div class="section">
-        <h2>Phase 3 Hooks</h2>
-        <div class="small">
-          Clean separation for multiplayer, server sync, accounts, cloud saves, map chunks, and AI pathfinding.
-        </div>
-      </div>
-    </aside>
   </div>
 
+  <div id="toast" class="toast"></div>
+
+  <datalist id="sortOptions">
+    <option value="Newest"></option>
+  </datalist>
+
   <script>
-    // =========================
-    // Core canvas and constants
-    // =========================
-    const canvas = document.getElementById('game');
-    const ctx = canvas.getContext('2d');
-    const GRID = 32;
-    const COLS = Math.floor(canvas.width / GRID);
-    const ROWS = Math.floor(canvas.height / GRID);
-    const SAVE_KEY = 'coreverse_phase2_expanded_save_v1';
+    const STORAGE_KEY = 'noteflow_notes_v1';
+    const OWNER_KEY = 'noteflow_owner_v1';
 
-    // =========================
-    // Game state
-    // =========================
-    const game = {
-      mode: 'survival',
-      tool: 'wall',
-      paused: false,
-      day: 1,
-      worldTime: 0,
-      weather: 'clear',
-      weatherTimer: 0,
-      season: 0,
-      seed: Math.floor(Date.now() % 1000000),
-      questProgress: 0,
-      questGoal: 3,
-      questType: 'collectWood',
-      flashMessage: '',
-      flashTimer: 0,
-      cameraShake: 0
+    const titleInput = document.getElementById('titleInput');
+    const contentInput = document.getElementById('contentInput');
+    const tagsInput = document.getElementById('tagsInput');
+    const privacyInput = document.getElementById('privacyInput');
+    const saveNoteBtn = document.getElementById('saveNoteBtn');
+    const clearFormBtn = document.getElementById('clearFormBtn');
+    const searchInput = document.getElementById('searchInput');
+    const tagSearchInput = document.getElementById('tagSearchInput');
+    const notesList = document.getElementById('notesList');
+    const toast = document.getElementById('toast');
+    const ownerInput = document.getElementById('ownerInput');
+    const saveOwnerBtn = document.getElementById('saveOwnerBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const importBtn = document.getElementById('importBtn');
+    const clearAllBtn = document.getElementById('clearAllBtn');
+
+    const stats = {
+      total: document.getElementById('totalNotes'),
+      public: document.getElementById('publicNotes'),
+      private: document.getElementById('privateNotes'),
+      starred: document.getElementById('starredNotes')
     };
 
-    const tiles = new Map();
-    const npcs = [];
-    const enemies = [];
-    const particles = [];
-    const drops = [];
-    const projectiles = [];
-    const logLines = [];
-    const clouds = [];
+    let notes = loadNotes();
+    let filterMode = 'all';
+    let currentSort = 'newest';
+    let ownerName = localStorage.getItem(OWNER_KEY) || 'Guest';
+    ownerInput.value = ownerName;
 
-    const inventory = {
-      wood: 24,
-      stone: 16,
-      food: 8,
-      fiber: 8,
-      metal: 2,
-      seeds: 6,
-      crystal: 0,
-      torch: 0,
-      sword: 0,
-      pickaxe: 0,
-      wall: 0,
-      floor: 0,
-      road: 0,
-      farm: 0,
-      bed: 0,
-      bridge: 0,
-      crate: 0,
-      altar: 0,
-      generator: 0,
-      coin: 0
-    };
-
-    let player = null;
-
-    const sprites = {
-      wall: { fill: '#8090b5' },
-      floor: { fill: '#364f73' },
-      road: { fill: '#666b73' },
-      tree: { fill: '#2eb96e' },
-      house: { fill: '#c99e61' },
-      water: { fill: '#2f6dd6' },
-      farm: { fill: '#7c5c2f' },
-      mine: { fill: '#7d7d7d' },
-      bed: { fill: '#b56fd2' },
-      bridge: { fill: '#8b5a2b' },
-      crate: { fill: '#8f6d3a' },
-      altar: { fill: '#9ea7ff' },
-      generator: { fill: '#8ad2ff' }
-    };
-
-    const modeButtons = {
-      survival: document.getElementById('modeSurvival'),
-      sandbox: document.getElementById('modeSandbox'),
-      battle: document.getElementById('modeBattle'),
-      city: document.getElementById('modeCity')
-    };
-
-    const el = {
-      modeLabel: document.getElementById('modeLabel'),
-      hpText: document.getElementById('hpText'),
-      hungerText: document.getElementById('hungerText'),
-      staminaText: document.getElementById('staminaText'),
-      energyText: document.getElementById('energyText'),
-      xpText: document.getElementById('xpText'),
-      levelText: document.getElementById('levelText'),
-      hpBar: document.getElementById('hpBar'),
-      hungerBar: document.getElementById('hungerBar'),
-      staminaBar: document.getElementById('staminaBar'),
-      energyBar: document.getElementById('energyBar'),
-      xpBar: document.getElementById('xpBar'),
-      dayText: document.getElementById('dayText'),
-      timeText: document.getElementById('timeText'),
-      invGrid: document.getElementById('inventoryGrid'),
-      log: document.getElementById('log'),
-      questBox: document.getElementById('questBox'),
-      toolLabel: document.getElementById('toolLabel'),
-      buildLabel: document.getElementById('buildLabel'),
-      npcCount: document.getElementById('npcCount'),
-      enemyCount: document.getElementById('enemyCount'),
-      weatherText: document.getElementById('weatherText'),
-      biomeText: document.getElementById('biomeText'),
-      seedText: document.getElementById('seedText')
-    };
-
-    // =========================
-    // Utility helpers
-    // =========================
-    function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
-    function key(x, y) { return `${x},${y}`; }
-    function inBounds(x, y) { return x >= 0 && y >= 0 && x < COLS && y < ROWS; }
-    function rand(min, max) { return Math.random() * (max - min) + min; }
-    function randInt(min, max) { return Math.floor(rand(min, max + 1)); }
-    function chance(p) { return Math.random() < p; }
-    function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
-    function lerp(a, b, t) { return a + (b - a) * t; }
-    function gridCenter(gx, gy) { return { x: gx * GRID + GRID / 2, y: gy * GRID + GRID / 2 }; }
-    function worldToGrid(px, py) { return { gx: Math.floor(px / GRID), gy: Math.floor(py / GRID) }; }
-    function timeLabel() {
-      const t = game.worldTime;
-      if (t < 500) return 'Dawn';
-      if (t < 1100) return 'Morning';
-      if (t < 1700) return 'Afternoon';
-      if (t < 2100) return 'Evening';
-      return 'Night';
-    }
-    function biomeLabel() {
-      if (game.season % 4 === 0) return 'Plains';
-      if (game.season % 4 === 1) return 'Forest';
-      if (game.season % 4 === 2) return 'Desert';
-      return 'Tundra';
-    }
-    function log(text) {
-      logLines.unshift(`[Day ${game.day} | ${timeLabel()}] ${text}`);
-      logLines.splice(24);
-      renderLog();
-    }
-    function flash(text, duration = 120) {
-      game.flashMessage = text;
-      game.flashTimer = duration;
-    }
-
-    // =========================
-    // Tile and world functions
-    // =========================
-    function tileDef(type, hpOverride) {
-      const base = {
-        type,
-        hp: hpOverride ?? (
-          type === 'tree' ? 3 :
-          type === 'house' ? 8 :
-          type === 'water' ? 999 :
-          type === 'mine' ? 4 :
-          type === 'altar' ? 6 :
-          type === 'generator' ? 6 :
-          4
-        ),
-        solid: ['wall', 'house', 'tree', 'mine', 'crate', 'altar', 'generator'].includes(type),
-        walkable: ['floor', 'road', 'farm', 'bridge', 'bed'].includes(type)
-      };
-      return base;
-    }
-    function placeTile(x, y, type, hpOverride) {
-      if (!inBounds(x, y)) return;
-      tiles.set(key(x, y), tileDef(type, hpOverride));
-    }
-    function removeTile(x, y) {
-      tiles.delete(key(x, y));
-    }
-    function getTile(x, y) {
-      return tiles.get(key(x, y)) || null;
-    }
-    function tileBlocks(type) {
-      return ['wall', 'house', 'tree', 'mine', 'crate', 'altar', 'generator'].includes(type);
-    }
-
-    function terrainNoise(x, y) {
-      const n = Math.sin((x * 12.9898 + y * 78.233 + game.seed) * 0.013) * 43758.5453;
-      return n - Math.floor(n);
-    }
-
-    function generateClouds() {
-      clouds.length = 0;
-      for (let i = 0; i < 7; i++) {
-        clouds.push({
-          x: rand(0, canvas.width),
-          y: rand(18, 120),
-          w: rand(120, 260),
-          h: rand(24, 56),
-          speed: rand(0.05, 0.22)
-        });
+    function loadNotes() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
       }
     }
 
-    function generateWorld() {
-      tiles.clear();
-      for (let y = 0; y < ROWS; y++) {
-        for (let x = 0; x < COLS; x++) {
-          const n = terrainNoise(x, y);
-          if (n > 0.94) placeTile(x, y, 'water');
-          else if (n > 0.89) placeTile(x, y, 'tree');
-          else if (n > 0.86) placeTile(x, y, 'mine');
-          else if (n > 0.83) placeTile(x, y, 'road');
-          else if (n > 0.80) placeTile(x, y, 'farm');
-        }
-      }
-      for (let x = 5; x < 23; x++) placeTile(x, 14, 'road');
-      for (let x = 2; x < 6; x++) placeTile(x, 20, 'tree');
-      for (let x = 8; x < 11; x++) placeTile(x, 18, 'tree');
-      placeTile(14, 11, 'house');
-      placeTile(15, 11, 'house');
-      placeTile(14, 12, 'floor');
-      placeTile(15, 12, 'floor');
-      placeTile(20, 9, 'farm');
-      placeTile(21, 9, 'farm');
-      placeTile(7, 9, 'mine');
-      placeTile(8, 9, 'mine');
-      placeTile(11, 16, 'bed');
-      placeTile(12, 16, 'crate');
-      placeTile(18, 13, 'altar');
-      placeTile(24, 7, 'generator');
-      generateClouds();
+    function saveNotes() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+      render();
     }
 
-    // =========================
-    // Entities
-    // =========================
-    function spawnPlayer() {
-      player = {
-        x: canvas.width / 2,
-        y: canvas.height / 2,
-        vx: 0,
-        vy: 0,
-        hp: 100,
-        hunger: 100,
-        stamina: 100,
-        energy: 100,
-        xp: 0,
-        level: 1,
-        speed: 2.35,
-        attackCooldown: 0,
-        facing: 'down',
-        weapon: 'hand',
-        shield: 0,
-        regenTimer: 0,
-        respawnX: canvas.width / 2,
-        respawnY: canvas.height / 2
-      };
-      log('Player spawned.');
-      updateUI();
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => toast.classList.remove('show'), 1700);
     }
 
-    function spawnNpc(kind = 'villager') {
-      npcs.push({
-        id: crypto?.randomUUID?.() || String(Math.random()),
-        kind,
-        x: rand(80, canvas.width - 80),
-        y: rand(80, canvas.height - 80),
-        vx: 0,
-        vy: 0,
-        hp: kind === 'builder' ? 50 : 40,
-        homeX: rand(50, canvas.width - 50),
-        homeY: rand(50, canvas.height - 50),
-        mood: 'idle',
-        color: kind === 'builder' ? '#28d7a1' : kind === 'farmer' ? '#ffcc66' : '#6fb2ff',
-        task: kind === 'builder' ? 'build' : kind === 'farmer' ? 'farm' : 'wander',
-        talkCooldown: 0,
-        inventory: { wood: 0, food: 0, stone: 0 }
-      });
-      log(`${kind} NPC spawned.`);
+    function escapeHtml(str) {
+      return str
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
     }
 
-    function spawnEnemy(type = 'crawler') {
-      const variants = {
-        crawler: { color: '#ff5c7a', hp: 35, speed: 1.6, damage: 5 },
-        brute: { color: '#ff9f5c', hp: 70, speed: 1.1, damage: 9 },
-        flyer: { color: '#e16bff', hp: 28, speed: 1.9, damage: 4 }
-      };
-      const v = variants[type] || variants.crawler;
-      enemies.push({
-        type,
-        x: rand(40, canvas.width - 40),
-        y: rand(40, canvas.height - 40),
-        vx: 0,
-        vy: 0,
-        hp: v.hp,
-        speed: v.speed,
-        color: v.color,
-        damage: v.damage,
-        attackCooldown: 0,
-        wanderTimer: randInt(30, 120),
-        state: 'seek',
-        dropTable: type === 'brute' ? ['food', 'stone', 'metal'] : ['food', 'fiber']
-      });
-      log(`${type} enemy spawned.`);
+    function createShareLink(note) {
+      const payload = btoa(unescape(encodeURIComponent(JSON.stringify(note))));
+      const url = new URL(window.location.href);
+      url.hash = `note=${payload}`;
+      return url.toString();
     }
 
-    function spawnDrop(x, y, item, amount = 1) {
-      drops.push({ x, y, item, amount, vx: rand(-0.5, 0.5), vy: rand(-1, -0.2), life: 600 });
-    }
-
-    function spawnParticle(x, y, color, count = 8, speed = 1.5, lifeMin = 20, lifeMax = 40) {
-      for (let i = 0; i < count; i++) {
-        particles.push({
-          x, y,
-          vx: rand(-speed, speed),
-          vy: rand(-speed, speed),
-          life: rand(lifeMin, lifeMax),
-          color
-        });
+    function readSharedNoteFromHash() {
+      const hash = window.location.hash || '';
+      if (!hash.startsWith('#note=')) return null;
+      try {
+        const payload = hash.slice(6);
+        const json = decodeURIComponent(escape(atob(payload)));
+        return JSON.parse(json);
+      } catch {
+        return null;
       }
     }
 
-    // =========================
-    // Inventory and crafting
-    // =========================
-    function renderInventory() {
-      const entries = Object.entries(inventory);
-      el.invGrid.innerHTML = entries.map(([name, qty]) => `
-        <div class="itemCard">
-          <strong>${name}</strong>
-          <div class="qty">x ${qty}</div>
-        </div>
-      `).join('');
+    function addOrUpdateSharedNote(note) {
+      const existing = notes.find(n => n.id === note.id);
+      if (existing) return;
+      notes.unshift(note);
+      saveNotes();
+      showToast('Shared note opened and added to your library.');
     }
 
-    const recipes = {
-      woodWall: { wood: 3 },
-      floor: { wood: 1, stone: 1 },
-      road: { stone: 2 },
-      torch: { wood: 1, fiber: 1 },
-      sword: { wood: 2, metal: 2 },
-      pickaxe: { wood: 2, stone: 2 },
-      farm: { wood: 2, seeds: 1 },
-      bed: { wood: 4, fiber: 2 },
-      bridge: { wood: 3, stone: 1 },
-      crate: { wood: 4 },
-      altar: { stone: 4, crystal: 1 },
-      generator: { metal: 3, stone: 2 }
-    };
+    function formatDate(ts) {
+      const d = new Date(ts);
+      return d.toLocaleString();
+    }
 
-    function canAfford(costs) {
-      for (const [k, v] of Object.entries(costs)) {
-        if ((inventory[k] || 0) < v) return false;
+    function normalizeTags(tags) {
+      return tags
+        .split(',')
+        .map(t => t.trim())
+        .filter(Boolean)
+        .slice(0, 8);
+    }
+
+    function getFilteredNotes() {
+      const q = searchInput.value.trim().toLowerCase();
+      const tagQ = tagSearchInput.value.trim().toLowerCase();
+
+      let list = [...notes];
+      if (filterMode === 'public') list = list.filter(n => n.privacy === 'public');
+      if (filterMode === 'private') list = list.filter(n => n.privacy === 'private');
+      if (filterMode === 'starred') list = list.filter(n => n.starred);
+
+      if (q) {
+        list = list.filter(n =>
+          n.title.toLowerCase().includes(q) ||
+          n.content.toLowerCase().includes(q) ||
+          n.tags.some(t => t.toLowerCase().includes(q)) ||
+          n.owner.toLowerCase().includes(q)
+        );
       }
-      return true;
-    }
 
-    function pay(costs) {
-      for (const [k, v] of Object.entries(costs)) inventory[k] -= v;
-    }
-
-    function craft(recipe) {
-      const costs = recipes[recipe];
-      if (!costs) return;
-      if (!canAfford(costs)) {
-        log(`Not enough resources to craft ${recipe}.`);
-        flash(`Missing resources for ${recipe}`);
-        return;
+      if (tagQ) {
+        list = list.filter(n => n.tags.some(t => t.toLowerCase().includes(tagQ)));
       }
-      pay(costs);
-      if (recipe === 'woodWall') inventory.wall += 1;
-      if (recipe === 'floor') inventory.floor += 1;
-      if (recipe === 'road') inventory.road += 1;
-      if (recipe === 'torch') inventory.torch += 1;
-      if (recipe === 'sword') inventory.sword += 1;
-      if (recipe === 'pickaxe') inventory.pickaxe += 1;
-      if (recipe === 'farm') inventory.farm += 1;
-      if (recipe === 'bed') inventory.bed += 1;
-      if (recipe === 'bridge') inventory.bridge += 1;
-      if (recipe === 'crate') inventory.crate += 1;
-      if (recipe === 'altar') inventory.altar += 1;
-      if (recipe === 'generator') inventory.generator += 1;
-      log(`Crafted ${recipe}.`);
-      flash(`Crafted ${recipe}`);
-      updateUI();
+
+      list.sort((a, b) => currentSort === 'oldest' ? a.createdAt - b.createdAt : b.createdAt - a.createdAt);
+      return list;
     }
 
-    function placeItemFromInventory(toolName, tileType = toolName) {
-      const map = {
-        wall: 'wall', floor: 'floor', road: 'road', farm: 'farm', bed: 'bed', bridge: 'bridge', crate: 'crate', altar: 'altar', generator: 'generator'
-      };
-      const invKey = map[toolName];
-      if (!invKey || (inventory[invKey] || 0) <= 0) return false;
-      inventory[invKey] -= 1;
-      return tileType;
+    function updateStats() {
+      stats.total.textContent = notes.length;
+      stats.public.textContent = notes.filter(n => n.privacy === 'public').length;
+      stats.private.textContent = notes.filter(n => n.privacy === 'private').length;
+      stats.starred.textContent = notes.filter(n => n.starred).length;
     }
 
-    // =========================
-    // Quest system
-    // =========================
-    function questText() {
-      const map = {
-        collectWood: 'Collect wood by destroying trees or picking up drops.',
-        craftTools: 'Craft a sword, pickaxe, or torch.',
-        buildHome: 'Build a small home with floor, wall, bed, and crate.',
-        defeatEnemies: 'Defeat enemies to protect the settlement.',
-        harvestFarm: 'Harvest food from farm plots.'
-      };
-      return map[game.questType] || 'Complete the active quest.';
-    }
-
-    function nextQuest() {
-      const list = ['collectWood', 'craftTools', 'buildHome', 'defeatEnemies', 'harvestFarm'];
-      game.questType = list[game.day % list.length];
-      game.questProgress = 0;
-      game.questGoal = game.questType === 'buildHome' ? 4 : game.questType === 'defeatEnemies' ? 2 : 3;
-      renderQuest();
-    }
-
-    function advanceQuest(amount = 1) {
-      game.questProgress += amount;
-      if (game.questProgress >= game.questGoal) {
-        inventory.coin += 5;
-        player.xp += 20;
-        log(`Quest complete: ${game.questType}. Reward gained.`);
-        flash('Quest complete!');
-        game.day += 0;
-        nextQuest();
-        updateXP();
-      }
-      renderQuest();
-    }
-
-    function renderQuest() {
-      el.questBox.innerHTML = `
-        <div class="miniTitle">Active quest</div>
-        <div style="color:#fff; font-weight:700; margin-bottom:6px;">${game.questType}</div>
-        <div style="margin-bottom:8px;">${questText()}</div>
-        <div>Progress: ${Math.min(game.questProgress, game.questGoal)} / ${game.questGoal}</div>
-      `;
-    }
-
-    // =========================
-    // UI updates
-    // =========================
-    function updateXP() {
-      while (player.xp >= player.level * 30) {
-        player.xp -= player.level * 30;
-        player.level++;
-        player.hp = clamp(player.hp + 15, 0, 100);
-        player.energy = clamp(player.energy + 20, 0, 100);
-        log(`Level up! You are now level ${player.level}.`);
-        flash(`Level ${player.level}`);
-      }
-    }
-
-    function updateUI() {
-      el.modeLabel.textContent = game.mode.charAt(0).toUpperCase() + game.mode.slice(1);
-      el.dayText.textContent = String(game.day);
-      el.timeText.textContent = timeLabel();
-      el.weatherText.textContent = game.weather.charAt(0).toUpperCase() + game.weather.slice(1);
-      el.biomeText.textContent = biomeLabel();
-      el.seedText.textContent = String(game.seed);
-      el.toolLabel.textContent = game.tool;
-      el.buildLabel.textContent = game.tool;
-      el.npcCount.textContent = String(npcs.length);
-      el.enemyCount.textContent = String(enemies.length);
-      if (!player) return;
-      el.hpText.textContent = Math.round(player.hp);
-      el.hungerText.textContent = Math.round(player.hunger);
-      el.staminaText.textContent = Math.round(player.stamina);
-      el.energyText.textContent = Math.round(player.energy);
-      el.xpText.textContent = Math.round(player.xp);
-      el.levelText.textContent = String(player.level);
-      el.hpBar.style.width = `${clamp(player.hp, 0, 100)}%`;
-      el.hungerBar.style.width = `${clamp(player.hunger, 0, 100)}%`;
-      el.staminaBar.style.width = `${clamp(player.stamina, 0, 100)}%`;
-      el.energyBar.style.width = `${clamp(player.energy, 0, 100)}%`;
-      el.xpBar.style.width = `${clamp((player.xp / (player.level * 30)) * 100, 0, 100)}%`;
-      renderInventory();
-      renderQuest();
-    }
-
-    function renderLog() {
-      el.log.innerHTML = logLines.map(line => `<p>${line}</p>`).join('');
-    }
-
-    // =========================
-    // Movement and collision
-    // =========================
-    function canWalkAt(px, py) {
-      const gx = Math.floor(px / GRID);
-      const gy = Math.floor(py / GRID);
-      const t = getTile(gx, gy);
-      if (!t) return true;
-      return !t.solid || t.walkable;
-    }
-
-    function moveEntity(ent, speed) {
-      const nx = ent.x + ent.vx * speed;
-      const ny = ent.y + ent.vy * speed;
-      if (canWalkAt(nx, ent.y)) ent.x = clamp(nx, 8, canvas.width - 8);
-      if (canWalkAt(ent.x, ny)) ent.y = clamp(ny, 8, canvas.height - 8);
-    }
-
-    function seekTarget(ent, tx, ty, speed) {
-      const dx = tx - ent.x;
-      const dy = ty - ent.y;
-      const d = Math.hypot(dx, dy) || 1;
-      ent.vx = dx / d;
-      ent.vy = dy / d;
-      moveEntity(ent, speed);
-    }
-
-    // =========================
-    // Combat and interactions
-    // =========================
-    function damageTile(gx, gy, amount) {
-      const t = getTile(gx, gy);
-      if (!t) return false;
-      t.hp -= amount;
-      spawnParticle(gx * GRID + GRID / 2, gy * GRID + GRID / 2, t.type === 'water' ? '#6fb2ff' : '#d7c4a2', 6, 1.4, 18, 30);
-      if (t.hp <= 0) {
-        const dropMap = {
-          tree: { wood: 2 },
-          mine: { stone: 2 },
-          house: { wood: 3, coin: 1 },
-          farm: { seeds: 1, food: 1 },
-          crate: { wood: 2, food: 1 },
-          altar: { crystal: 1 },
-          generator: { metal: 1 }
-        };
-        const dropsHere = dropMap[t.type] || {};
-        for (const [item, amt] of Object.entries(dropsHere)) inventory[item] += amt;
-        tiles.delete(key(gx, gy));
-        log(`Destroyed ${t.type}.`);
-        if (t.type === 'tree') advanceQuest(1);
-        updateUI();
-        return true;
-      }
-      updateUI();
-      return false;
-    }
-
-    function attack() {
-      if (!player || player.attackCooldown > 0) return;
-      player.attackCooldown = inventory.sword > 0 ? 18 : 24;
-      const range = inventory.sword > 0 ? 60 : 38;
-      let hit = false;
-      const damage = inventory.sword > 0 ? 18 : 8;
-
-      enemies.forEach(e => {
-        if (dist(player, e) < range) {
-          e.hp -= damage;
-          hit = true;
-          spawnParticle(e.x, e.y, '#ff5c7a', 10);
-          player.xp += 4;
-        }
-      });
-
-      npcs.forEach(n => {
-        if (game.mode === 'battle' && dist(player, n) < range) {
-          n.hp -= 6;
-          hit = true;
-        }
-      });
-
-      const g = worldToGrid(player.x, player.y);
-      const ox = player.facing === 'right' ? 1 : player.facing === 'left' ? -1 : 0;
-      const oy = player.facing === 'down' ? 1 : player.facing === 'up' ? -1 : 0;
-      damageTile(g.gx + ox, g.gy + oy, inventory.pickaxe > 0 ? 2 : 1);
-
-      if (hit) {
-        log('Attack connected.');
-        player.xp += 2;
-        updateXP();
-      }
-      updateUI();
-    }
-
-    function interact() {
-      if (!player) return;
-      const g = worldToGrid(player.x, player.y);
-      const near = [
-        getTile(g.gx, g.gy), getTile(g.gx + 1, g.gy), getTile(g.gx - 1, g.gy),
-        getTile(g.gx, g.gy + 1), getTile(g.gx, g.gy - 1)
-      ].filter(Boolean);
-
-      if (near.some(t => t.type === 'farm')) {
-        inventory.food += 2;
-        player.xp += 4;
-        log('Harvested food from a farm plot.');
-        advanceQuest(1);
-      } else if (near.some(t => t.type === 'house' || t.type === 'bed')) {
-        player.energy = clamp(player.energy + 24, 0, 100);
-        player.hp = clamp(player.hp + 8, 0, 100);
-        log('Rested near a home area.');
-      } else if (near.some(t => t.type === 'generator')) {
-        inventory.coin += 1;
-        player.energy = clamp(player.energy + 12, 0, 100);
-        log('Collected energy from a generator.');
-      } else {
-        if (inventory.food > 0) {
-          inventory.food -= 1;
-          player.hunger = clamp(player.hunger + 12, 0, 100);
-          player.energy = clamp(player.energy + 4, 0, 100);
-          log('Ate food.');
-        } else {
-          log('No food available.');
-        }
-      }
-      updateUI();
-    }
-
-    // =========================
-    // Building / mouse placement
-    // =========================
-    function placeOrDeleteAtMouse(mx, my) {
-      const gx = Math.floor(mx / GRID);
-      const gy = Math.floor(my / GRID);
-      if (!inBounds(gx, gy)) return;
-
-      if (game.tool === 'delete') {
-        const t = getTile(gx, gy);
-        if (t) {
-          if (t.type === 'tree') inventory.wood += 1;
-          if (t.type === 'mine') inventory.stone += 1;
-        }
-        removeTile(gx, gy);
-        log('Deleted tile.');
-        updateUI();
+    function render() {
+      updateStats();
+      const list = getFilteredNotes();
+      if (!list.length) {
+        notesList.innerHTML = `
+          <div class="empty">
+            No notes found.
+            <br />Try creating one, changing the filter, or clearing search.
+          </div>
+        `;
         return;
       }
 
-      if (game.tool === 'mine') {
-        placeTile(gx, gy, 'mine');
-        log('Placed mine tile.');
-        return;
-      }
-
-      const directPlacers = {
-        farm: 'farm', bed: 'bed', bridge: 'bridge', crate: 'crate', altar: 'altar', generator: 'generator'
-      };
-
-      if (directPlacers[game.tool]) {
-        const invKey = directPlacers[game.tool];
-        if ((inventory[invKey] || 0) > 0) {
-          inventory[invKey] -= 1;
-          placeTile(gx, gy, directPlacers[game.tool]);
-          log(`Placed ${game.tool}.`);
-        } else {
-          log(`No ${game.tool} in inventory. Craft it first.`);
-        }
-        updateUI();
-        return;
-      }
-
-      if (game.tool === 'tree' || game.tool === 'house' || game.tool === 'water') {
-        placeTile(gx, gy, game.tool);
-        log(`Placed ${game.tool}.`);
-        return;
-      }
-
-      const placerMap = { wall: 'wall', floor: 'floor', road: 'road' };
-      if (placerMap[game.tool]) {
-        const invKey = placerMap[game.tool];
-        if ((inventory[invKey] || 0) > 0) {
-          inventory[invKey] -= 1;
-          placeTile(gx, gy, placerMap[game.tool]);
-          log(`Placed ${game.tool}.`);
-        } else {
-          log(`No ${game.tool} in inventory.`);
-        }
-        updateUI();
-      }
+      notesList.innerHTML = list.map(note => {
+        const tagHtml = note.tags.map(t => `<span class="tag">#${escapeHtml(t)}</span>`).join(' ');
+        const shareLink = createShareLink(note);
+        return `
+          <article class="note">
+            <header>
+              <h3>${escapeHtml(note.title)}</h3>
+              <div class="meta">
+                <span>By ${escapeHtml(note.owner)}</span>
+                <span>${formatDate(note.createdAt)}</span>
+                <span>${note.privacy === 'public' ? 'Public' : 'Private'}</span>
+              </div>
+            </header>
+            <div>${tagHtml || '<span class="tag">#untagged</span>'}</div>
+            <p>${escapeHtml(note.content)}</p>
+            <div class="noteActions">
+              <button data-action="star" data-id="${note.id}" class="${note.starred ? 'warn' : ''}">${note.starred ? 'Unstar' : 'Star'}</button>
+              <button data-action="copy" data-id="${note.id}">Copy</button>
+              <button data-action="share" data-id="${note.id}" class="primary">Share Link</button>
+              <button data-action="edit" data-id="${note.id}">Edit</button>
+              <button data-action="delete" data-id="${note.id}" class="danger">Delete</button>
+            </div>
+            <div class="tiny" style="margin-top:8px; overflow-wrap:anywhere;">Share URL: ${escapeHtml(shareLink)}</div>
+          </article>
+        `;
+      }).join('');
     }
 
-    canvas.addEventListener('click', (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const sx = canvas.width / rect.width;
-      const sy = canvas.height / rect.height;
-      const mx = (e.clientX - rect.left) * sx;
-      const my = (e.clientY - rect.top) * sy;
-      placeOrDeleteAtMouse(mx, my);
-    });
-
-    // =========================
-    // Input
-    // =========================
-    const keys = new Set();
-    document.addEventListener('keydown', (e) => {
-      keys.add(e.key.toLowerCase());
-      if (e.key.toLowerCase() === 'c') craftMenuQuick();
-      if (e.key.toLowerCase() === 'e') interact();
-      if (e.key === ' ' || e.key.toLowerCase() === 'space') attack();
-      if (e.key.toLowerCase() === 'p') game.paused = !game.paused;
-    });
-    document.addEventListener('keyup', (e) => keys.delete(e.key.toLowerCase()));
-
-    function craftMenuQuick() {
-      const choice = prompt('Craft what? woodWall, floor, road, torch, sword, pickaxe, farm, bed, bridge, crate, altar, generator');
-      if (choice) craft(choice.trim());
+    function resetForm() {
+      titleInput.value = '';
+      contentInput.value = '';
+      tagsInput.value = '';
+      privacyInput.value = 'public';
+      titleInput.focus();
     }
 
-    document.querySelectorAll('.toolBtn').forEach(btn => {
-      btn.addEventListener('click', () => setTool(btn.dataset.tool));
-    });
-    document.querySelectorAll('[data-craft]').forEach(btn => {
-      btn.addEventListener('click', () => craft(btn.dataset.craft));
-    });
-
-    modeButtons.survival.onclick = () => setMode('survival');
-    modeButtons.sandbox.onclick = () => setMode('sandbox');
-    modeButtons.battle.onclick = () => setMode('battle');
-    modeButtons.city.onclick = () => setMode('city');
-
-    document.getElementById('spawnNpc').onclick = () => spawnNpc(game.mode === 'sandbox' ? 'builder' : game.mode === 'city' ? 'farmer' : 'villager');
-    document.getElementById('spawnEnemy').onclick = () => spawnEnemy(chance(0.25) ? 'brute' : chance(0.5) ? 'flyer' : 'crawler');
-    document.getElementById('spawnPlayer').onclick = () => spawnPlayer();
-
-    // =========================
-    // Save / load
-    // =========================
-    function serialize() {
+    function createNote({ id, title, content, tags, privacy, owner, starred = false, createdAt = Date.now() }) {
       return {
-        game,
-        player,
-        inventory,
-        tiles: Array.from(tiles.entries()),
-        npcs,
-        enemies,
-        particles,
-        drops,
-        projectiles,
-        logLines,
-        clouds
+        id: id || crypto.randomUUID(),
+        title,
+        content,
+        tags,
+        privacy,
+        owner,
+        starred,
+        createdAt
       };
     }
 
-    function applySave(save) {
-      if (!save) return;
-      Object.assign(game, save.game || {});
-      player = save.player || null;
-      Object.keys(inventory).forEach(k => inventory[k] = save.inventory?.[k] ?? inventory[k]);
-      tiles.clear();
-      (save.tiles || []).forEach(([k, v]) => tiles.set(k, v));
-      npcs.length = 0; (save.npcs || []).forEach(n => npcs.push(n));
-      enemies.length = 0; (save.enemies || []).forEach(en => enemies.push(en));
-      particles.length = 0; (save.particles || []).forEach(p => particles.push(p));
-      drops.length = 0; (save.drops || []).forEach(d => drops.push(d));
-      projectiles.length = 0; (save.projectiles || []).forEach(p => projectiles.push(p));
-      logLines.length = 0; (save.logLines || []).forEach(l => logLines.push(l));
-      clouds.length = 0; (save.clouds || []).forEach(c => clouds.push(c));
-      setTool(game.tool);
-      setMode(game.mode);
-      renderLog();
-      updateUI();
-    }
+    saveNoteBtn.addEventListener('click', () => {
+      const title = titleInput.value.trim();
+      const content = contentInput.value.trim();
+      const tags = normalizeTags(tagsInput.value);
+      const privacy = privacyInput.value;
 
-    document.getElementById('saveBtn').onclick = () => {
-      localStorage.setItem(SAVE_KEY, JSON.stringify(serialize()));
-      log('Game saved.');
-    };
-
-    document.getElementById('loadBtn').onclick = () => {
-      const raw = localStorage.getItem(SAVE_KEY);
-      if (!raw) return log('No save file found.');
-      applySave(JSON.parse(raw));
-      log('Game loaded.');
-    };
-
-    document.getElementById('clearBtn').onclick = () => {
-      tiles.clear();
-      npcs.length = 0;
-      enemies.length = 0;
-      particles.length = 0;
-      drops.length = 0;
-      projectiles.length = 0;
-      logLines.length = 0;
-      game.day = 1;
-      game.worldTime = 0;
-      game.weather = 'clear';
-      game.weatherTimer = 0;
-      game.season = 0;
-      Object.keys(inventory).forEach(k => inventory[k] = 0);
-      inventory.wood = 24;
-      inventory.stone = 16;
-      inventory.food = 8;
-      inventory.fiber = 8;
-      inventory.metal = 2;
-      inventory.seeds = 6;
-      generateWorld();
-      spawnPlayer();
-      spawnNpc('villager');
-      spawnNpc('builder');
-      spawnNpc('farmer');
-      spawnEnemy('crawler');
-      nextQuest();
-      log('World cleared.');
-      updateUI();
-    };
-
-    // =========================
-    // Game modes
-    // =========================
-    function setMode(nextMode) {
-      game.mode = nextMode;
-      Object.entries(modeButtons).forEach(([k, b]) => b.classList.toggle('active', k === nextMode));
-      log(`Switched to ${nextMode} mode.`);
-      if (game.mode === 'battle') {
-        while (enemies.length < 6) spawnEnemy(chance(0.3) ? 'brute' : 'crawler');
-      }
-      updateUI();
-    }
-
-    function setTool(nextTool) {
-      game.tool = nextTool;
-      document.querySelectorAll('.toolBtn').forEach(btn => btn.classList.toggle('active', btn.dataset.tool === nextTool));
-      updateUI();
-      log(`Tool selected: ${nextTool}`);
-    }
-
-    // =========================
-    // World systems
-    // =========================
-    function updateTime() {
-      game.worldTime += 0.45;
-      if (game.worldTime >= 2400) {
-        game.worldTime = 0;
-        game.day++;
-        game.season++;
-        nextQuest();
-        log('A new day has begun.');
-      }
-      if (game.weatherTimer <= 0) {
-        const options = ['clear', 'rain', 'fog', 'storm'];
-        game.weather = options[randInt(0, options.length - 1)];
-        game.weatherTimer = randInt(1200, 2500);
-        log(`Weather changed to ${game.weather}.`);
-      } else {
-        game.weatherTimer--;
-      }
-      el.dayText.textContent = String(game.day);
-      el.timeText.textContent = timeLabel();
-      el.weatherText.textContent = game.weather.charAt(0).toUpperCase() + game.weather.slice(1);
-      el.biomeText.textContent = biomeLabel();
-    }
-
-    function updatePlayer() {
-      if (!player) return;
-      let mvx = 0, mvy = 0;
-      const up = keys.has('w') || keys.has('arrowup');
-      const down = keys.has('s') || keys.has('arrowdown');
-      const left = keys.has('a') || keys.has('arrowleft');
-      const right = keys.has('d') || keys.has('arrowright');
-
-      if (up) { mvy -= 1; player.facing = 'up'; }
-      if (down) { mvy += 1; player.facing = 'down'; }
-      if (left) { mvx -= 1; player.facing = 'left'; }
-      if (right) { mvx += 1; player.facing = 'right'; }
-
-      const moving = mvx !== 0 || mvy !== 0;
-      if (moving && player.stamina > 0) {
-        const len = Math.hypot(mvx, mvy) || 1;
-        player.vx = mvx / len;
-        player.vy = mvy / len;
-        moveEntity(player, player.speed);
-        player.stamina = clamp(player.stamina - 0.22, 0, 100);
-      } else {
-        player.vx = 0;
-        player.vy = 0;
-        player.stamina = clamp(player.stamina + 0.18, 0, 100);
+      if (!title || !content) {
+        showToast('Add both a title and some content.');
+        return;
       }
 
-      if (player.attackCooldown > 0) player.attackCooldown--;
+      notes.unshift(createNote({
+        title,
+        content,
+        tags,
+        privacy,
+        owner: ownerName
+      }));
 
-      if (game.mode === 'survival') {
-        player.hunger = clamp(player.hunger - 0.03, 0, 100);
-        if (player.hunger < 20) player.hp = clamp(player.hp - 0.03, 0, 100);
-        player.energy = clamp(player.energy - (moving ? 0.014 : 0.005), 0, 100);
-      } else if (game.mode === 'sandbox') {
-        player.energy = clamp(player.energy + 0.01, 0, 100);
-      } else if (game.mode === 'city') {
-        player.energy = clamp(player.energy + 0.006, 0, 100);
-      }
+      saveNotes();
+      resetForm();
+      showToast('Note saved.');
+    });
 
-      if (game.weather === 'rain') {
-        player.speed = 2.15;
-      } else if (game.weather === 'storm') {
-        player.speed = 2.0;
-        player.energy = clamp(player.energy - 0.006, 0, 100);
-      } else {
-        player.speed = 2.35;
-      }
+    clearFormBtn.addEventListener('click', resetForm);
 
-      if (player.hp <= 0) {
-        log('You died. Respawning...');
-        player.hp = 100;
-        player.hunger = 100;
-        player.stamina = 100;
-        player.energy = 100;
-        player.x = player.respawnX;
-        player.y = player.respawnY;
-        flash('Respawned');
-      }
-    }
+    document.querySelectorAll('.filterBtn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filterBtn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        filterMode = btn.dataset.filter;
+        render();
+      });
+    });
 
-    function updateNPCs() {
-      npcs.forEach(n => {
-        n.talkCooldown = Math.max(0, n.talkCooldown - 1);
-        const wandering = Math.random() < 0.02;
-        if (game.mode === 'sandbox') {
-          if (wandering) {
-            n.vx = rand(-1, 1);
-            n.vy = rand(-1, 1);
-          }
-          moveEntity(n, 0.9);
-        } else if (game.mode === 'city') {
-          if (player && chance(0.008)) seekTarget(n, player.x, player.y, 0.7);
-          else if (wandering) seekTarget(n, n.homeX, n.homeY, 0.5);
-        } else {
-          if (player) seekTarget(n, player.x, player.y, 0.6);
+    searchInput.addEventListener('input', render);
+    tagSearchInput.addEventListener('input', render);
+
+    saveOwnerBtn.addEventListener('click', () => {
+      const name = ownerInput.value.trim() || 'Guest';
+      ownerName = name;
+      localStorage.setItem(OWNER_KEY, ownerName);
+      showToast(`Owner saved as ${ownerName}.`);
+      render();
+    });
+
+    exportBtn.addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(notes, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'noteflow-notes.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Export started.');
+    });
+
+    importBtn.addEventListener('click', async () => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json,application/json';
+      input.onchange = async () => {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        try {
+          const text = await file.text();
+          const parsed = JSON.parse(text);
+          if (!Array.isArray(parsed)) throw new Error('Invalid file');
+          notes = parsed.map(n => createNote({
+            id: n.id,
+            title: n.title || 'Untitled',
+            content: n.content || '',
+            tags: Array.isArray(n.tags) ? n.tags : [],
+            privacy: n.privacy === 'private' ? 'private' : 'public',
+            owner: n.owner || 'Guest',
+            starred: !!n.starred,
+            createdAt: n.createdAt || Date.now()
+          }));
+          saveNotes();
+          showToast('Import complete.');
+        } catch {
+          showToast('Could not import that file.');
         }
+      };
+      input.click();
+    });
 
-        if (player && dist(player, n) < 26 && n.talkCooldown <= 0) {
-          n.talkCooldown = 240;
-          if (n.kind === 'builder') log('Builder: I can help expand the settlement.');
-          else if (n.kind === 'farmer') log('Farmer: Food is life. Keep the farm working.');
-          else log('Villager: Stay safe out there.');
-        }
-      });
+    clearAllBtn.addEventListener('click', () => {
+      if (!confirm('Delete all notes?')) return;
+      notes = [];
+      saveNotes();
+      showToast('All notes cleared.');
+    });
+
+    notesList.addEventListener('click', async (e) => {
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const id = btn.dataset.id;
+      const note = notes.find(n => n.id === id);
+      if (!note) return;
+
+      const action = btn.dataset.action;
+
+      if (action === 'star') {
+        note.starred = !note.starred;
+        saveNotes();
+        showToast(note.starred ? 'Note starred.' : 'Note unstarred.');
+      }
+
+      if (action === 'copy') {
+        const text = `${note.title}\n\n${note.content}\n\nTags: ${note.tags.join(', ') || 'none'}\nOwner: ${note.owner}`;
+        await navigator.clipboard.writeText(text);
+        showToast('Note copied.');
+      }
+
+      if (action === 'share') {
+        const link = createShareLink(note);
+        await navigator.clipboard.writeText(link);
+        showToast('Share link copied.');
+      }
+
+      if (action === 'delete') {
+        if (!confirm('Delete this note?')) return;
+        notes = notes.filter(n => n.id !== id);
+        saveNotes();
+        showToast('Note deleted.');
+      }
+
+      if (action === 'edit') {
+        titleInput.value = note.title;
+        contentInput.value = note.content;
+        tagsInput.value = note.tags.join(', ');
+        privacyInput.value = note.privacy;
+        notes = notes.filter(n => n.id !== id);
+        saveNotes();
+        showToast('Note loaded into editor. Save it after editing.');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+
+    window.addEventListener('hashchange', () => {
+      const shared = readSharedNoteFromHash();
+      if (shared) addOrUpdateSharedNote(shared);
+    });
+
+    const sharedNote = readSharedNoteFromHash();
+    if (sharedNote) addOrUpdateSharedNote(sharedNote);
+
+    // Starter sample notes
+    if (notes.length === 0) {
+      notes = [
+        createNote({
+          title: 'Welcome to NoteFlow',
+          content: 'This is a sample public note. Create your own notes, tag them, star them, and share them with a link.',
+          tags: ['welcome', 'demo'],
+          privacy: 'public',
+          owner: 'NoteFlow'
+        }),
+        createNote({
+          title: 'School Reminder',
+          content: 'Finish homework, revise chapter 4, and prepare the project for tomorrow.',
+          tags: ['school', 'study'],
+          privacy: 'private',
+          owner: 'Guest'
+        })
+      ];
+      saveNotes();
+    } else {
+      render();
     }
 
-    function updateEnemies() {
-      enemies.forEach(e => {
-        if (!player) return;
-        const d = dist(player, e);
-        if (d < 220) {
-          seekTarget(e, player.x, player.y, e.speed);
-          e.state = 'seek';
-        } else {
-          e.wanderTimer--;
-          e.state = 'wander';
-          if (e.wanderTimer <= 0) {
-            e.vx = rand(-1, 1);
-            e.vy = rand(-1, 1);
-            e.wanderTimer = randInt(45, 140);
-          }
-          moveEntity(e, e.speed * 0.45);
-        }
-        if (d < 18 && e.attackCooldown <= 0) {
-          e.attackCooldown = 40;
-          const dmg = e.damage;
-          player.hp = clamp(player.hp - dmg, 0, 100);
-          spawnParticle(player.x, player.y, '#ff5c7a', 10, 1.8, 20, 34);
-          game.cameraShake = 8;
-          log('Enemy hit you.');
-        }
-        if (e.attackCooldown > 0) e.attackCooldown--;
-      });
-
-      for (let i = enemies.length - 1; i >= 0; i--) {
-        if (enemies[i].hp <= 0) {
-          const en = enemies[i];
-          spawnParticle(en.x, en.y, '#ffcc66', 12, 2.0, 18, 36);
-          en.dropTable.forEach(item => inventory[item] += 1);
-          inventory.coin += 2;
-          enemies.splice(i, 1);
-          log('Enemy defeated.');
-          advanceQuest(1);
-        }
-      }
-    }
-
-    function updateDrops() {
-      for (let i = drops.length - 1; i >= 0; i--) {
-        const d = drops[i];
-        d.x += d.vx;
-        d.y += d.vy;
-        d.vy += 0.02;
-        d.life--;
-        if (player && dist(player, d) < 20) {
-          inventory[d.item] = (inventory[d.item] || 0) + d.amount;
-          drops.splice(i, 1);
-          log(`Picked up ${d.amount} ${d.item}.`);
-          if (d.item === 'wood') advanceQuest(1);
-          continue;
-        }
-        if (d.life <= 0) drops.splice(i, 1);
-      }
-    }
-
-    function updateProjectiles() {
-      for (let i = projectiles.length - 1; i >= 0; i--) {
-        const p = projectiles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life--;
-        if (p.life <= 0) projectiles.splice(i, 1);
-      }
-    }
-
-    function updateParticles() {
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life -= 1;
-        p.vy += 0.01;
-        if (p.life <= 0) particles.splice(i, 1);
-      }
-    }
-
-    // =========================
-    // Rendering
-    // =========================
-    function drawTile(gx, gy, t) {
-      const x = gx * GRID;
-      const y = gy * GRID;
-      ctx.fillStyle = (sprites[t.type] || { fill: '#fff' }).fill;
-      ctx.fillRect(x + 1, y + 1, GRID - 2, GRID - 2);
-
-      if (t.type === 'tree') {
-        ctx.fillStyle = '#1f7a49';
-        ctx.beginPath();
-        ctx.arc(x + 16, y + 12, 9, 0, Math.PI * 2);
-        ctx.fill();
-      } else if (t.type === 'house') {
-        ctx.fillStyle = '#8d5a2e';
-        ctx.fillRect(x + 10, y + 14, 12, 12);
-        ctx.fillStyle = '#593814';
-        ctx.beginPath();
-        ctx.moveTo(x + 6, y + 15);
-        ctx.lineTo(x + 16, y + 5);
-        ctx.lineTo(x + 26, y + 15);
-        ctx.closePath();
-        ctx.fill();
-      } else if (t.type === 'farm') {
-        ctx.fillStyle = '#b57d34';
-        ctx.fillRect(x + 5, y + 5, 22, 22);
-        ctx.fillStyle = '#8f6526';
-        ctx.fillRect(x + 14, y + 7, 2, 20);
-        ctx.fillRect(x + 7, y + 14, 18, 2);
-      } else if (t.type === 'mine') {
-        ctx.fillStyle = '#626262';
-        ctx.fillRect(x + 7, y + 7, 18, 18);
-        ctx.fillStyle = '#8a8a8a';
-        ctx.fillRect(x + 11, y + 11, 10, 10);
-      } else if (t.type === 'bed') {
-        ctx.fillStyle = '#9156bc';
-        ctx.fillRect(x + 4, y + 14, 24, 10);
-        ctx.fillStyle = '#6c3f97';
-        ctx.fillRect(x + 5, y + 10, 8, 8);
-      } else if (t.type === 'crate') {
-        ctx.fillStyle = '#6f5127';
-        ctx.fillRect(x + 6, y + 6, 20, 20);
-        ctx.fillStyle = '#8a6a38';
-        ctx.fillRect(x + 14, y + 6, 2, 20);
-        ctx.fillRect(x + 6, y + 14, 20, 2);
-      } else if (t.type === 'altar') {
-        ctx.fillStyle = '#c2c7ff';
-        ctx.beginPath();
-        ctx.arc(x + 16, y + 16, 7, 0, Math.PI * 2);
-        ctx.fill();
-      } else if (t.type === 'generator') {
-        ctx.fillStyle = '#c0f0ff';
-        ctx.fillRect(x + 8, y + 8, 16, 16);
-      }
-    }
-
-    function drawClouds() {
-      clouds.forEach(c => {
-        c.x += c.speed;
-        if (c.x > canvas.width + c.w) c.x = -c.w;
-        ctx.fillStyle = 'rgba(255,255,255,0.16)';
-        ctx.beginPath();
-        ctx.ellipse(c.x, c.y, c.w * 0.28, c.h * 0.55, 0, 0, Math.PI * 2);
-        ctx.ellipse(c.x + c.w * 0.18, c.y + 2, c.w * 0.22, c.h * 0.45, 0, 0, Math.PI * 2);
-        ctx.ellipse(c.x - c.w * 0.16, c.y + 4, c.w * 0.20, c.h * 0.42, 0, 0, Math.PI * 2);
-        ctx.fill();
-      });
-    }
-
-    function drawMinimap() {
-      const w = 140, h = 100;
-      const x = canvas.width - w - 16;
-      const y = canvas.height - h - 16;
-      ctx.fillStyle = 'rgba(0,0,0,0.42)';
-      ctx.fillRect(x, y, w, h);
-      ctx.strokeStyle = 'rgba(255,255,255,0.12)';
-      ctx.strokeRect(x, y, w, h);
-
-      const sx = w / COLS;
-      const sy = h / ROWS;
-      for (const [k, t] of tiles.entries()) {
-        const [gx, gy] = k.split(',').map(Number);
-        ctx.fillStyle = t.type === 'water' ? '#2f6dd6' : t.type === 'tree' ? '#2eb96e' : t.type === 'house' ? '#c99e61' : t.type === 'farm' ? '#b57d34' : t.type === 'mine' ? '#7d7d7d' : t.type === 'road' ? '#666b73' : t.type === 'altar' ? '#9ea7ff' : '#8ad2ff';
-        ctx.fillRect(x + gx * sx, y + gy * sy, Math.max(1, sx), Math.max(1, sy));
-      }
-      if (player) {
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(x + (player.x / GRID) * sx - 1, y + (player.y / GRID) * sy - 1, 3, 3);
-      }
-      ctx.fillStyle = 'rgba(255,255,255,0.7)';
-      ctx.font = '11px Arial';
-      ctx.fillText('Minimap', x + 8, y + 14);
-    }
-
-    function drawWorld() {
-      ctx.save();
-      if (game.cameraShake > 0) {
-        const s = game.cameraShake / 2;
-        ctx.translate(rand(-s, s), rand(-s, s));
-        game.cameraShake *= 0.85;
-        if (game.cameraShake < 0.1) game.cameraShake = 0;
-      }
-
-      // background sky
-      const sky = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      sky.addColorStop(0, '#142750');
-      sky.addColorStop(0.6, '#09111d');
-      sky.addColorStop(1, '#05070d');
-      ctx.fillStyle = sky;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      drawClouds();
-
-      // weather overlay
-      if (game.weather === 'rain') {
-        ctx.fillStyle = 'rgba(115,160,255,0.08)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.strokeStyle = 'rgba(140,190,255,0.18)';
-        for (let i = 0; i < 60; i++) {
-          const x = (i * 47 + (Date.now() * 0.3)) % canvas.width;
-          const y = (i * 73 + (Date.now() * 0.6)) % canvas.height;
-          ctx.beginPath();
-          ctx.moveTo(x, y);
-          ctx.lineTo(x - 6, y + 18);
-          ctx.stroke();
-        }
-      }
-      if (game.weather === 'fog') {
-        ctx.fillStyle = 'rgba(220,230,255,0.09)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
-      if (game.weather === 'storm') {
-        ctx.fillStyle = 'rgba(0,0,0,0.08)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
-
-      // lighting based on time of day
-      let darkness = 0;
-      const hour = game.worldTime / 100;
-      if (hour < 5 || hour > 19) darkness = 0.46;
-      else if (hour < 7 || hour > 17) darkness = 0.20;
-      ctx.fillStyle = `rgba(0,0,0,${darkness})`;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // grid
-      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
-      for (let x = 0; x <= canvas.width; x += GRID) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
-      }
-      for (let y = 0; y <= canvas.height; y += GRID) {
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
-      }
-
-      // tiles
-      for (const [k, t] of tiles.entries()) {
-        const [gx, gy] = k.split(',').map(Number);
-        drawTile(gx, gy, t);
-      }
-
-      // drops
-      drops.forEach(d => {
-        ctx.fillStyle = d.item === 'wood' ? '#8b5a2b' : d.item === 'stone' ? '#8f8f8f' : d.item === 'food' ? '#ffcc66' : d.item === 'fiber' ? '#65f2c9' : d.item === 'metal' ? '#d6d6d6' : d.item === 'seed' || d.item === 'seeds' ? '#a8d46f' : '#ffffff';
-        ctx.beginPath();
-        ctx.arc(d.x, d.y, 4, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      // NPCs
-      npcs.forEach(n => {
-        ctx.fillStyle = n.color;
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, 10, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = 'rgba(255,255,255,0.18)';
-        ctx.fillRect(n.x - 12, n.y - 18, 24, 4);
-        ctx.fillStyle = n.hp > 20 ? '#28d7a1' : '#ff5c7a';
-        ctx.fillRect(n.x - 12, n.y - 18, 24 * (n.hp / Math.max(1, n.kind === 'builder' ? 50 : 40)), 4);
-      });
-
-      // enemies
-      enemies.forEach(e => {
-        ctx.fillStyle = e.color;
-        ctx.beginPath();
-        ctx.arc(e.x, e.y, 11, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      // projectiles
-      projectiles.forEach(p => {
-        ctx.fillStyle = p.color;
-        ctx.fillRect(p.x, p.y, 3, 3);
-      });
-
-      // particles
-      particles.forEach(p => {
-        ctx.fillStyle = p.color;
-        ctx.fillRect(p.x, p.y, 2, 2);
-      });
-
-      // player
-      if (player) {
-        ctx.fillStyle = '#7c5cff';
-        ctx.beginPath();
-        ctx.arc(player.x, player.y, 12, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(player.x - 2, player.y - 17, 4, 4);
-        ctx.fillStyle = 'rgba(255,255,255,0.2)';
-        ctx.fillRect(player.x - 16, player.y - 24, 32, 5);
-        ctx.fillStyle = '#28d7a1';
-        ctx.fillRect(player.x - 16, player.y - 24, 32 * (player.hp / 100), 5);
-      }
-
-      // HUD overlay
-      ctx.fillStyle = 'rgba(255,255,255,0.92)';
-      ctx.font = 'bold 16px Arial';
-      ctx.fillText(`CoreVerse | ${game.mode.toUpperCase()} | Day ${game.day} | ${timeLabel()}`, 20, 28);
-      ctx.font = '13px Arial';
-      ctx.fillStyle = 'rgba(255,255,255,0.68)';
-      ctx.fillText('Build, survive, craft, and expand this world.', 20, 48);
-
-      if (game.flashTimer > 0) {
-        ctx.fillStyle = 'rgba(0,0,0,0.35)';
-        ctx.fillRect(canvas.width / 2 - 110, 60, 220, 34);
-        ctx.fillStyle = '#fff';
-        ctx.font = 'bold 15px Arial';
-        ctx.fillText(game.flashMessage, canvas.width / 2 - ctx.measureText(game.flashMessage).width / 2, 82);
-        game.flashTimer--;
-      }
-
-      if (game.paused) {
-        ctx.fillStyle = 'rgba(0,0,0,0.55)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#fff';
-        ctx.font = 'bold 38px Arial';
-        ctx.fillText('PAUSED', canvas.width / 2 - 80, canvas.height / 2);
-      }
-
-      drawMinimap();
-      ctx.restore();
-    }
-
-    // =========================
-    // Main loop
-    // =========================
-    function updateGame() {
-      if (game.paused) return;
-      updateTime();
-      updatePlayer();
-      updateNPCs();
-      updateEnemies();
-      updateDrops();
-      updateProjectiles();
-      updateParticles();
-      updateUI();
-    }
-
-    function gameLoop() {
-      updateGame();
-      drawWorld();
-      requestAnimationFrame(gameLoop);
-    }
-
-    // =========================
-    // Initial setup
-    // =========================
-    function seedWorld() {
-      generateWorld();
-      spawnPlayer();
-      spawnNpc('villager');
-      spawnNpc('builder');
-      spawnNpc('farmer');
-      spawnEnemy('crawler');
-      spawnEnemy('crawler');
-      nextQuest();
-      log('World created.');
-      flash('CoreVerse Ready');
-      updateUI();
-    }
-
-    // hooks / placeholder systems for future expansion
-    function tickAIPlanning() {
-      // Future pathfinding, jobs, and regional simulation.
-    }
-    function tickEconomy() {
-      // Future shops, prices, markets, taxes, and trading.
-    }
-    function tickWorldEvents() {
-      // Future raids, festivals, disasters, and random events.
-    }
-
-    // Start
-    seedWorld();
-    setMode('survival');
-    setTool('wall');
-    renderLog();
-    updateUI();
-    gameLoop();
+    updateStats();
+    render();
   </script>
 </body>
 </html>
